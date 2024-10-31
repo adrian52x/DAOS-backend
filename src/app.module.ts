@@ -7,11 +7,6 @@ import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-    MongoConfigModule,
-    UsersModule,
-    PostsModule,
-  ],
+	imports: [ConfigModule.forRoot(), MongoConfigModule, UsersModule, PostsModule],
 })
 export class AppModule {}
