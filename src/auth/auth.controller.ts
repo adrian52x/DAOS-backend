@@ -15,7 +15,9 @@ export class AuthController {
     constructor(private authService: AuthService) {}
     
     @Post('login')
-    async login(@Request() req): Promise<any | BadRequestException> {
+    async login(@Request() req): Promise<any | BadRequestException> {  // TO DO here
+      console.log(req.body);
+      
       return this.authService.login(req.user);
     }
     @Post('register')
@@ -24,4 +26,4 @@ export class AuthController {
     ): Promise<CreateUserDto | BadRequestException> {
       return await this.authService.register(registerBody);
     }
-  }
+}

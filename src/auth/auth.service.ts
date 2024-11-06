@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/schema/user.schema';
@@ -31,19 +31,29 @@ export class AuthService {
     }
 
     async login(user: User): Promise<any> {
-        const payload = { email: user.email, name: user.name };
+        console.log(user); // TO DO here, maybe pass username and password instead of user https://docs.nestjs.com/security/authentication
+        
+        const validatedUser = await this.validateUser(user.email, user.password);
+        const payload = { email: validatedUser.email, name: validatedUser.name };
         return { access_token: this.jwtService.sign(payload) };
-    }
+      }
 
     async register(user: CreateUserDto): Promise<any> {
-        const existingUser = await this.usersService.findOneByEmail(user.email);
-        if (existingUser) {
-          throw new BadRequestException('email already exists');
-        }
-        const hashedPassword = await bcrypt.hash(user.password, 10);
-        const newUser: User = { ...user, password: hashedPassword };
-        await this.usersService.create(newUser);
-        return this.login(newUser);
+        try {
+            const existingUser = await this.usersService.findOneByEmail(user.email);
+            if (existingUser) {
+            throw new BadRequestException('email already exists');
+            }
+            const hashedPassword = await bcrypt.hash(user.password, 10);
+            const newUser: User = { ...user, password: hashedPassword };
+            await this.usersService.create(newUser);
+            return this.login(newUser);
+        } catch (error) {
+            if (error instanceof BadRequestException) {
+                throw error;
+            }
+            //throw new InternalServerErrorException('An error occurred during registration');
+        }    
     }
 
 }
