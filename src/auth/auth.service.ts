@@ -28,8 +28,8 @@ export class AuthService {
 		return user;
 	}
 
-	async login(user: User): Promise<any> {
-		console.log(user); // TO DO here, maybe pass username and password instead of user https://docs.nestjs.com/security/authentication
+	async login(user: User): Promise<any> { // V1 To do , use LoginDto instead of User
+		console.log(user); // V2 TO DO here, maybe pass username and password instead of user https://docs.nestjs.com/security/authentication
 
 		const validatedUser = await this.validateUser(user.email, user.password);
 		const payload = { email: validatedUser.email, name: validatedUser.name };
