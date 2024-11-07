@@ -2,17 +2,17 @@ import { BadRequestException, Body, Controller, Post, Request, UseGuards } from 
 
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { LoginDto } from 'src/users/dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
 	@Post('login')
-	async login(@Request() req): Promise<any | BadRequestException> {
-		// TO DO here
-		console.log(req.body);
+	async login(@Body() loginBody: LoginDto): Promise<any | BadRequestException> {
+		console.log(loginBody);
 
-		return this.authService.login(req.user);
+		return this.authService.login(loginBody);
 	}
 	@Post('register')
 	async register(@Body() registerBody: CreateUserDto): Promise<CreateUserDto | BadRequestException> {
