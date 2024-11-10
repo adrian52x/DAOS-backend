@@ -12,6 +12,7 @@ import { LoginDto } from 'src/users/dto/login.dto';
 
 const enum ErrorMessages {
 	INVALID_CREDS = 'Invalid credentials',
+	EMAIL_EXISTS = 'Email already exists',
 }
 
 @Injectable()
@@ -33,8 +34,9 @@ export class AuthService {
 		return user;
 	}
 
-	async login(user: LoginDto): Promise<any> { // V1 To do , use LoginDto instead of User
-		console.log(user); // V2 TO DO here, maybe pass username and password instead of user https://docs.nestjs.com/security/authentication
+	async login(user: LoginDto): Promise<any> {
+		// V1 To do , use LoginDto instead of User
+		console.log('Login called with:', user); // V2 TO DO here, maybe pass username and password instead of user https://docs.nestjs.com/security/authentication
 
 		const validatedUser = await this.validateUser(user.email, user.password);
 		const payload = { email: validatedUser.email, name: validatedUser.name };
@@ -42,20 +44,21 @@ export class AuthService {
 	}
 
 	async register(user: CreateUserDto): Promise<any> {
+		console.log('Register called with:', user);
 		try {
 			const existingUser = await this.usersService.findOneByEmail(user.email);
 			if (existingUser) {
-				throw new BadRequestException('email already exists');
+				throw new BadRequestException(ErrorMessages.EMAIL_EXISTS);
 			}
 			const hashedPassword = await bcrypt.hash(user.password, 10);
 			const newUser: User = { ...user, password: hashedPassword };
 			await this.usersService.create(newUser);
-			return this.login(newUser);
+			return this.login({ email: user.email, password: user.password });
 		} catch (error) {
 			if (error instanceof BadRequestException) {
 				throw error;
 			}
-			//throw new InternalServerErrorException('An error occurred during registration');
+			throw new InternalServerErrorException('An error occurred during registration');
 		}
 	}
 }
