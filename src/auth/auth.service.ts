@@ -39,7 +39,9 @@ export class AuthService {
 		console.log('Login called with:', user); // V2 TO DO here, maybe pass username and password instead of user https://docs.nestjs.com/security/authentication
 
 		const validatedUser = await this.validateUser(user.email, user.password);
-		const payload = { email: validatedUser.email, name: validatedUser.name };
+		console.log('validatedUser:', validatedUser);
+		
+		const payload = { _id: validatedUser._id, email: validatedUser.email, name: validatedUser.name };
 		return { access_token: this.jwtService.sign(payload) };
 	}
 
@@ -51,7 +53,7 @@ export class AuthService {
 				throw new BadRequestException(ErrorMessages.EMAIL_EXISTS);
 			}
 			const hashedPassword = await bcrypt.hash(user.password, 10);
-			const newUser: User = { ...user, password: hashedPassword };
+			const newUser: CreateUserDto = { ...user, password: hashedPassword };
 			await this.usersService.create(newUser);
 			return this.login({ email: user.email, password: user.password });
 		} catch (error) {
