@@ -10,6 +10,5 @@ export class CreatePostDto {
 	@IsString()
 	readonly content: string;
 
-	// @IsNotEmpty()
-	// readonly user: Types.ObjectId;
+	readonly ensemble?: string;
 }

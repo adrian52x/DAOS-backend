@@ -21,7 +21,7 @@ export class UsersService {
 		return this.userModel.findOne({ email }).exec();
 	}
 
-	async findOneById(id: Types.ObjectId): Promise<User> {
+	async findOneById(id: string): Promise<User> {
 		return this.userModel.findById(id).exec();
 	}
 }

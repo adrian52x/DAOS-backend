@@ -10,7 +10,6 @@ import { RolesGuard } from './roles.guard';
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
-	// @UsePipes(new ValidationPipe())
 	@Post('login')
 	async login(@Body() loginBody: LoginDto): Promise<any | BadRequestException> {
 		return this.authService.login(loginBody);

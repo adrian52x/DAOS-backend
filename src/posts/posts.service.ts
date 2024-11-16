@@ -5,49 +5,74 @@ import { Post, PostDocument } from './schema/post.schema';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UsersService } from 'src/users/users.service';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { EnsemblesService } from 'src/ensembles/ensembles.service';
+import { ErrorMessages } from 'src/constants/error-messages';
 
 @Injectable()
 export class PostsService {
 	constructor(
 		@InjectModel(Post.name) private postModel: Model<PostDocument>,
-		private readonly usersService: UsersService
+		private readonly usersService: UsersService,
+		private readonly ensemblesService: EnsemblesService
 	) {}
 
-	async create(createPostDto: CreatePostDto, userId: Types.ObjectId): Promise<Post> {
+	async create(createPostDto: CreatePostDto, userId: string): Promise<Post> {
 		const user = await this.usersService.findOneById(userId);
 		if (!user) {
-			throw new BadRequestException('User does not exist');
+			throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
 		}
 
-		const createdPost = new this.postModel({...createPostDto, user: user._id});
+		// In case the post is part of an ensemble, check if the ensemble exists
+		if(createPostDto.ensemble) {
+			const ensemble = await this.ensemblesService.findOneById(createPostDto.ensemble);
+			if (!ensemble) {
+				throw new BadRequestException(ErrorMessages.ENSEMBLE_NOT_FOUND);
+			}
+
+			// Check if the authenticated user is the owner of the ensemble
+			if(ensemble.owner.toString() !== userId.toString()) {
+				throw new UnauthorizedException(ErrorMessages.NO_PERMISSION_CREATE_POST);
+			}	
+		}	
+
+		const createdPost = new this.postModel({...createPostDto, author: user._id});
 		return createdPost.save();
+	}
+
+	async findOneById(id: string): Promise<Post> {
+		if (!Types.ObjectId.isValid(id)) {
+			throw new BadRequestException(ErrorMessages.INVALID_POST_ID);
+		}
+		return this.postModel.findById(id).exec();
+	}
+
+	async update(id: string, updatePostDto: UpdatePostDto, userId: string): Promise<Post> {
+		const post = await this.findOneById(id);
+		if (!post) {
+		  throw new BadRequestException(ErrorMessages.POST_NOT_FOUND);
+		}
+		if (post.author.toString() !== userId.toString()) {
+			console.log("User who created the post", post.author);
+			console.log("User who is trying to update", userId);
+			
+		  throw new UnauthorizedException(ErrorMessages.NO_PERMISSION_UPDATE_POST);
+		}
+		return this.postModel.findByIdAndUpdate(id, updatePostDto, { new: true }).exec();
 	}
 
 	async findAll(): Promise<Post[]> {
 		return this.postModel.find().exec();
 	}
 
-	async findOneById(id: Types.ObjectId): Promise<Post> {
-		if (!Types.ObjectId.isValid(id)) {
-			throw new BadRequestException('Invalid post ID');
+	async findAllByAuthorId(authorId: string): Promise<Post[]> {
+		const user = await this.usersService.findOneById(authorId);
+		if (!user) {
+			throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
 		}
-		return this.postModel.findById(id).exec();
+
+		return this.postModel.find({ author: authorId }).exec();
 	}
 
-	async update(id: Types.ObjectId, updatePostDto: UpdatePostDto, userId: Types.ObjectId): Promise<Post> {
-		const post = await this.findOneById(id);
-		if (!post) {
-			console.log('Post not found');
-			
-		  throw new BadRequestException('Post not found');
-		}
-		if (post.user.toString() !== userId.toString()) {
-			console.log("User who created the post", post.user);
-			console.log("User who is trying to update", userId);
-			
-		  throw new UnauthorizedException('You do not have permission to update this post');
-		}
-		return this.postModel.findByIdAndUpdate(id, updatePostDto, { new: true }).exec();
-	}
+
 }
  

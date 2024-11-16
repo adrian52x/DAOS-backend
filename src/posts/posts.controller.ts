@@ -16,16 +16,21 @@ export class PostsController {
 		return this.postsService.create(createPostDto, userId);
 	}
 
-	@Get()
-	findAll() {
-		return this.postsService.findAll();
-	}
-
 	@Put(':id')
 	@UseGuards(AuthGuard)
-	async update(@Param('id') id: Types.ObjectId, @Body() updatePostDto: UpdatePostDto, @Request() req) {
+	async update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto, @Request() req) {
 		const userId = req.user._id; // authenticated user's id
 		return this.postsService.update(id, updatePostDto, userId);
 	}
+
+	@Get()
+	findAll() {
+		return this.postsService.findAll();
+	} 
+
+	@Get('/author/:authorId')
+	findAllByAuthorId(@Param('authorId') authorId: string) {		
+		return this.postsService.findAllByAuthorId(authorId);
+	}	
 }
  

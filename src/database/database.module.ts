@@ -6,11 +6,7 @@ import { Connection } from 'mongoose';
 
 @Module({
 	imports: [
-		// ConfigModule.forRoot({   // --> loaded the custom configuration file inside app.module.ts
-		// 	load: [configuration],
-		// }),
 		MongooseModule.forRootAsync({
-			//imports: [ConfigModule], // --> is set to global, so it is not necessary to import it here
 			inject: [ConfigService],
 			useFactory: async (configService: ConfigService) => ({
 				uri: configService.get<string>('database.uri'), // --> get a custom configuration value

@@ -9,7 +9,4 @@ export class UpdatePostDto {
     @IsString()
     @IsNotEmpty()
     readonly content: string;
-
-    // @IsNotEmpty()
-    // readonly user: Types.ObjectId;
 }
