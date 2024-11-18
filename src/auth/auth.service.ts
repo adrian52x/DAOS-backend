@@ -33,10 +33,11 @@ export class AuthService {
 		const accessToken = this.jwtService.sign(payload);
 
 		// Set the access_token in cookies
-		res.cookie('access_token', accessToken, { httpOnly: true });
-		return { message: 'Success' };
+		res.cookie('access_token', accessToken);
 
-		//return { access_token: this.jwtService.sign(payload) };
+	    // Return the user without the password
+		const userWithoutPassword = { ...JSON.parse(JSON.stringify(validatedUser)), password: undefined };
+    	return userWithoutPassword;
 	}
 
 	async register(user: CreateUserDto, res: any): Promise<any> {
@@ -55,5 +56,13 @@ export class AuthService {
 			}
 			throw new InternalServerErrorException(ErrorMessages.UNKNOW_REGISTER_ERROR);
 		}
+	}
+
+	async logout(res: Response): Promise<any> {
+		// Clear the access_token cookie
+		console.log('logout service');
+		
+		res.clearCookie('access_token');
+		return { message: 'Logout successful' };
 	}
 }

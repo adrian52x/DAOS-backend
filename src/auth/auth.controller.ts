@@ -17,8 +17,15 @@ export class AuthController {
 	}
 
 	@Post('register')
-	async register(@Body() registerBody: CreateUserDto, @Res() res: Response): Promise<CreateUserDto | BadRequestException> {
+	async register(@Body() registerBody: CreateUserDto, @Res({ passthrough: true }) res: Response): Promise<CreateUserDto | BadRequestException> {
 		return await this.authService.register(registerBody, res);
+	}
+
+	@Post('logout')
+	async logout(@Res({ passthrough: true }) res: Response) {
+		console.log('logout');
+		
+		return this.authService.logout(res);
 	}
 
 	@UseGuards(AuthGuard)
