@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/schema/user.schema';
@@ -36,7 +36,7 @@ export class AuthService {
 		res.cookie('access_token', accessToken);
 
 	    // Return the user without the password
-		const userWithoutPassword = { ...JSON.parse(JSON.stringify(validatedUser)), password: undefined };
+		const userWithoutPassword = { ...JSON.parse(JSON.stringify(validatedUser)), password: undefined, access_token: accessToken };
     	return userWithoutPassword;
 	}
 
@@ -64,5 +64,16 @@ export class AuthService {
 		
 		res.clearCookie('access_token');
 		return { message: 'Logout successful' };
+	}
+
+	async getProfile(userId: string): Promise<any> {
+		const user = await this.usersService.findOneById(userId);
+		if (!user) {
+		  throw new UnauthorizedException(ErrorMessages.USER_NOT_FOUND);
+		}
+	
+		// Convert the Mongoose document to a plain object and remove the password field
+		const userWithoutPassword = { ...JSON.parse(JSON.stringify(user)), password: undefined };
+    	return userWithoutPassword;
 	}
 }
