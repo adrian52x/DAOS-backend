@@ -47,7 +47,11 @@ export class AuthService {
 				throw new BadRequestException(ErrorMessages.EMAIL_EXISTS);
 			}
 			const hashedPassword = await bcrypt.hash(user.password, 10);
-			const newUser: CreateUserDto = { ...user, password: hashedPassword };
+			
+			const registerTime = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris' }));
+			registerTime.setHours(registerTime.getHours() + 1);
+
+			const newUser: CreateUserDto = { ...user, password: hashedPassword, createdAt: registerTime };
 			await this.usersService.create(newUser);
 			return this.login({ email: user.email, password: user.password }, res);
 		} catch (error) {
