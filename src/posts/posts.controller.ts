@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, UseGuards, Request, Query } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -23,13 +23,26 @@ export class PostsController {
 		return this.postsService.update(id, updatePostDto, userId);
 	}
 
-	@Get()
-	findAll() {
-		return this.postsService.findAll();
-	}
-
 	@Get('/author/:authorId')
 	findAllByAuthorId(@Param('authorId') authorId: string) {
 		return this.postsService.findAllByAuthorId(authorId);
+	}
+
+	@Get()
+	async getPosts(
+		@Query('limit') limit: string, // limit number of posts (pagination)
+		@Query('page') page: string, // page number (pagination)
+		@Query('area') area: string, // filter by area
+		@Query('instrument') instrument: string, // filter by instrument
+		@Query('experience') experience: string, // filter by experience level
+		@Query('sort') sort: string // sorting (e.g., 'date', 'experience')
+	) {
+		const postLimit = parseInt(limit, 10) || 5; // default to 5 posts per request
+		const postPage = parseInt(page, 10) || 1; // default to page 1
+		const filters = { area, instrument, experience }; // filters for post search
+		const sortOption = sort || 'createdAt'; // default sort by creation date
+
+		// Fetch filtered and paginated posts from the service
+		return this.postsService.getFilteredPosts(postLimit, postPage, filters, sortOption);
 	}
 }
