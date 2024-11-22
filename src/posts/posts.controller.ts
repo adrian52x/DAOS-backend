@@ -3,7 +3,7 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { Types } from 'mongoose';
+// import { Types } from 'mongoose';
 
 @Controller('/api/posts')
 export class PostsController {
@@ -26,11 +26,10 @@ export class PostsController {
 	@Get()
 	findAll() {
 		return this.postsService.findAll();
-	} 
+	}
 
 	@Get('/author/:authorId')
-	findAllByAuthorId(@Param('authorId') authorId: string) {		
+	findAllByAuthorId(@Param('authorId') authorId: string) {
 		return this.postsService.findAllByAuthorId(authorId);
-	}	
+	}
 }
- 
