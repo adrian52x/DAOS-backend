@@ -3,7 +3,6 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { Types } from 'mongoose';
 
 @Controller('/api/posts')
 export class PostsController {
@@ -12,7 +11,7 @@ export class PostsController {
 	@Post()
 	@UseGuards(AuthGuard)
 	create(@Body() createPostDto: CreatePostDto, @Request() req) {
-		const userId = req.user._id; //  authenticated user's id
+		const userId = req.user._id; // authenticated user's id
 		return this.postsService.create(createPostDto, userId);
 	}
 
@@ -26,11 +25,16 @@ export class PostsController {
 	@Get()
 	findAll() {
 		return this.postsService.findAll();
-	} 
+	}
 
 	@Get('/author/:authorId')
-	findAllByAuthorId(@Param('authorId') authorId: string) {		
+	findAllByAuthorId(@Param('authorId') authorId: string) {
 		return this.postsService.findAllByAuthorId(authorId);
-	}	
+	}
+
+	// Add this endpoint to fetch a post by ID
+	@Get(':id')
+	findOne(@Param('id') id: string) {
+		return this.postsService.findOneById(id);
+	}
 }
- 

@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-import { Types } from 'mongoose';
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { Instrument } from '../schema/post.schema';
 
 export class CreatePostDto {
 	@IsNotEmpty()
@@ -8,7 +8,13 @@ export class CreatePostDto {
 
 	@IsNotEmpty()
 	@IsString()
-	readonly content: string;
+	readonly description: string;
 
-	readonly ensemble?: string;
+	@IsNotEmpty()
+	@IsString()
+	readonly instruments: Instrument[];
+
+	@IsOptional()
+	@IsString()
+	readonly ensemble?: string; // Optional ensemble ID
 }
