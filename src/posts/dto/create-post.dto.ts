@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsArray } from 'class-validator';
 import { Instrument } from '../schema/post.schema';
 
 export class CreatePostDto {
@@ -11,7 +11,7 @@ export class CreatePostDto {
 	readonly description: string;
 
 	@IsNotEmpty()
-	@IsString()
+	@IsArray()
 	readonly instruments: Instrument[];
 
 	@IsOptional()
