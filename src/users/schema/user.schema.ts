@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { InstrumentDto } from 'src/posts/dto/instrument.dto';
 
 export type UserDocument = User & Document;
 
@@ -9,7 +10,7 @@ export interface Instrument {
 	genre: string;
 }
 
-@Schema()
+@Schema({ timestamps: true }) // Automatically adds createdAt and updatedAt
 export class User {
 	
 	readonly _id: Types.ObjectId;
@@ -27,7 +28,7 @@ export class User {
 	address: string;
 
 	@Prop()
-	zipcode: string;
+	zipCode: string;
 
 	@Prop()
 	phone: string;
@@ -39,11 +40,7 @@ export class User {
 	dateOfBirth: Date;
 
 	@Prop({ type: [{ name: String, level: Number, genre: String, _id: false }] })
-	instruments: Instrument[];
-
-	@Prop()
-	createdAt: Date;
-
+	instruments: InstrumentDto[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

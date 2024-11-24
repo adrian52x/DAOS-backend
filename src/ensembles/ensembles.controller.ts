@@ -41,4 +41,11 @@ export class EnsemblesController {
     async findAll() {
         return this.ensemblesService.findAll();
     }
+
+    @Get("/own")
+    @UseGuards(AuthGuard)
+    async findAllUserOwn(@Request() req) {
+        const userId = req.user._id;
+        return this.ensemblesService.findAllUserOwn(userId);
+    }
 }

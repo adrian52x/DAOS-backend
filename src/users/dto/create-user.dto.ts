@@ -13,6 +13,4 @@ export class CreateUserDto {
 	@IsString()
 	@MinLength(4)
 	readonly password: string;
-
-	readonly createdAt: Date;
 }

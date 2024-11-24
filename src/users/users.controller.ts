@@ -8,11 +8,6 @@ import { AuthGuard } from 'src/auth/auth.guard';
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 
-	@Post()
-	create(@Body() createUserDto: CreateUserDto) {
-		return this.usersService.create(createUserDto);
-	}
-
 	@Put()
 	@UseGuards(AuthGuard)
 	update(@Body() updateUserDto: UpdateUserDto, @Request() req) {

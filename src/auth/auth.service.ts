@@ -48,10 +48,7 @@ export class AuthService {
 			}
 			const hashedPassword = await bcrypt.hash(user.password, 10);
 			
-			const registerTime = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris' }));
-			registerTime.setHours(registerTime.getHours() + 1);
-
-			const newUser: CreateUserDto = { ...user, password: hashedPassword, createdAt: registerTime };
+			const newUser: CreateUserDto = { ...user, password: hashedPassword };
 			await this.usersService.create(newUser);
 			return this.login({ email: user.email, password: user.password }, res);
 		} catch (error) {

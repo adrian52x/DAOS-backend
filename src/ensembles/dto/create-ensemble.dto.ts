@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class CreateEnsembleDto {
@@ -6,7 +6,19 @@ export class CreateEnsembleDto {
 	@IsString()
 	readonly name: string;
 
-	readonly owner?: string;
+	@IsString()
+	@IsOptional()  // Remove optional decorator later
+	readonly address: string;
 
-	readonly members?: string[];
+	@IsString()
+	@IsOptional() // Remove optional decorator later
+	readonly zipCode: string;
+
+	@IsString()
+	@IsOptional() // Remove optional decorator later
+	readonly activeMembers: string;
+
+	readonly owner: string;
+
+	readonly members: string[];
 }

@@ -1,25 +1,43 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { Instrument } from '../schema/user.schema';
+import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, MinLength, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { InstrumentDto } from 'src/posts/dto/instrument.dto';
 
 export class UpdateUserDto {
 
+    @IsOptional()
+    @IsString()
 	readonly name: string;
 
+    @IsOptional()
+    @IsString()
 	readonly email: string;
 
+    @IsOptional()
+    @IsString()
 	readonly password: string;
 
+    @IsOptional()
+    @IsString()
     readonly address: string;
     
-    readonly zipcode: string;
+    @IsOptional()
+    @IsString()
+    readonly zipCode: string;
 
+    @IsOptional()
+    @IsString()
     readonly phone: string;
 
+    @IsOptional()
+    @IsString()
     readonly profileText: string;
 
+    @IsDate()
+    @IsString()
     readonly dateOfBirth: Date;
 
-    readonly instruments: Instrument[];
-
-
+    @IsOptional()
+    @ValidateNested({ each: true })
+    @Type(() => InstrumentDto)
+    readonly instruments?: InstrumentDto[];
 }

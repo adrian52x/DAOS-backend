@@ -3,11 +3,9 @@ import * as mongoose from 'mongoose';
 import { Types } from 'mongoose';
 import { Ensemble } from 'src/ensembles/schema/ensemble.schema';
 import { User } from 'src/users/schema/user.schema';
-export interface Instrument {
-	name: string;
-	level: number;
-	genre: string;
-}
+import { InstrumentDto } from '../dto/instrument.dto';
+
+
 export type PostDocument = Post & Document;
 
 @Schema({ timestamps: true }) // Automatically adds createdAt and updatedAt
@@ -20,8 +18,8 @@ export class Post {
 	@Prop({ required: true })
 	description: string;
 
-	@Prop({ type: [{ name: String, level: Number, genre: String, _id: false }] })
-	instruments: Instrument[];
+	@Prop({ type: { name: String, level: Number, genre: String, _id: false } })
+	instrument: InstrumentDto;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
 	author: User;

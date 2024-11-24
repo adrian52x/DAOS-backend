@@ -4,18 +4,18 @@ import { User } from 'src/users/schema/user.schema';
 
 export type EnsembleDocument = Ensemble & Document;
 
-@Schema()
+@Schema({ timestamps: true }) 
 export class Ensemble {
 	@Prop({ required: true })
 	name: string;
 
-	@Prop()
+	@Prop({ default: 'Copenhagen' })  // Remove default later
 	address: string;
 
-	@Prop()
+	@Prop({ default: '2300' }) // Remove default later
 	zipCode: string;
 
-	@Prop()
+	@Prop({ default: '8-10' }) // Remove default later
 	activeMembers: string;
 
 	@Prop({ type: Types.ObjectId, ref: 'User', required: true })

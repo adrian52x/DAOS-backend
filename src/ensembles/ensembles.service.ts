@@ -81,5 +81,9 @@ export class EnsemblesService {
 
 
         return this.ensembleModel.findByIdAndUpdate(ensembleId, ensemble, { new: true }).exec();
-    }    
+    }
+    
+    async findAllUserOwn(userId: string): Promise<Ensemble[]> {
+        return this.ensembleModel.find({ owner: userId }).exec();
+    }
 }

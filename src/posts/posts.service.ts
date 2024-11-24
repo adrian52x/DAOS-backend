@@ -73,6 +73,49 @@ export class PostsService {
 		return this.postModel.find({ author: authorId }).exec();
 	}
 
+	/**
+	 * Fetch posts with pagination, filtering, and sorting options.
+	 * @param limit - number of posts to return per page
+	 * @param page - page number for pagination
+	 * @param filters - object containing the filters (e.g., area, instrument, etc.)
+	 * @param sortOption - field to sort by (e.g., createdAt, experience)
+	 */
+	async getFilteredPosts(limit: number, page: number, filters: any, sortOption: string): Promise<Post[]> {
+		// Build query based on filters
+		const filterQuery: any = {};
+		// Add filters dynamically to the query
+		if (filters.area) {
+			filterQuery.area = { $regex: filters.area, $options: 'i' }; // case-insensitive search
+		}
+		if (filters.instrument) {
+			filterQuery.instrument = { $in: filters.instrument.split(',') }; // split instruments if multiple values are provided
+		}
+		if (filters.experience) {
+			filterQuery.experience = { $gte: parseInt(filters.experience, 10) };
+		} 
+
+		// Pagination logic
+		const skip = (page - 1) * limit;
+		// Sorting option (default to sorting by createdAt if not specified)
+		const sort = sortOption || 'createdAt';
+		// Query the database with filters, pagination, and sorting
+		return this.postModel
+			.find(filterQuery) // Apply filters
+			.sort({ [sort]: -1 }) // Sort based on the sort option (descending order)
+			.skip(skip) // Skip posts for pagination
+			.limit(limit) // Limit the number of posts returned
+			.populate('ensemble');
+	}
+	/**
+	 * Fetch the latest posts with optional limit.
+	 */
+	async getLatestPosts(limit: number) {
+		return this.postModel
+			.find() // No filters by default
+			.sort({ createdAt: -1 }) // Sort by creation date (descending)
+			.limit(limit); // Limit the number of posts returned
+	}
+
 
 }
  

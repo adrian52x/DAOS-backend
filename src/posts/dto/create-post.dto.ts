@@ -1,5 +1,7 @@
-import { IsNotEmpty, IsString, IsOptional, IsArray } from 'class-validator';
-import { Instrument } from '../schema/post.schema';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsString, IsOptional, IsArray, IsObject, ValidateNested } from 'class-validator';
+import { InstrumentDto } from './instrument.dto';
+
 
 export class CreatePostDto {
 	@IsNotEmpty()
@@ -11,10 +13,11 @@ export class CreatePostDto {
 	readonly description: string;
 
 	@IsNotEmpty()
-	@IsArray()
-	readonly instruments: Instrument[];
+	@ValidateNested()
+	@Type(() => InstrumentDto)
+	readonly instrument: InstrumentDto;
 
 	@IsOptional()
 	@IsString()
-	readonly ensemble?: string; // Optional ensemble ID
+	readonly ensemble: string; // Optional ensemble ID
 }

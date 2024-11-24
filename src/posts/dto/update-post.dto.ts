@@ -1,6 +1,6 @@
-import { IsString, IsNotEmpty, IsArray, IsOptional } from 'class-validator';
-import { Types } from 'mongoose';
-import { Instrument } from '../schema/post.schema';
+import { IsString, IsNotEmpty, IsArray, IsOptional, IsObject, ValidateNested } from 'class-validator';
+import { InstrumentDto } from './instrument.dto';
+import { Type } from 'class-transformer';
 
 export class UpdatePostDto {
 
@@ -13,8 +13,9 @@ export class UpdatePostDto {
     readonly description: string;
 
     @IsOptional()
-	@IsArray()
-	readonly instruments: Instrument[];
+	@ValidateNested()
+	@Type(() => InstrumentDto)
+	readonly instrument: InstrumentDto;
 
 	@IsOptional()
 	@IsString()
