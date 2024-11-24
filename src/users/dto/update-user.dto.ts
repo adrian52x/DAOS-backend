@@ -32,7 +32,7 @@ export class UpdateUserDto {
     @IsString()
     readonly profileText: string;
 
-    @IsDate()
+    @IsOptional()
     @IsString()
     readonly dateOfBirth: Date;
 
