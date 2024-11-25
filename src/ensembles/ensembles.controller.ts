@@ -1,8 +1,7 @@
-import { Controller, Get, Post, Body, UseGuards, Request, Put, Param, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, Put, Param } from '@nestjs/common';
 import { EnsemblesService } from './ensembles.service';
 import { CreateEnsembleDto } from './dto/create-ensemble.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { Types } from 'mongoose';
 import { HandleRequestDto } from './dto/handle-request.dto';
 
 @Controller('/api/ensembles')
@@ -35,7 +34,7 @@ export class EnsemblesController {
 		return this.ensemblesService.findAll();
 	}
 
-	@Get(':id')
+	@Get('/one/:id')
 	findOne(@Param('id') id: string) {
 		return this.ensemblesService.findOneById(id);
 	}

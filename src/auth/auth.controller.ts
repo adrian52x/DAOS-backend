@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post, Get, Request, UseGuards, UsePipes, ValidationPipe, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post, Get, Request, UseGuards, Res } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
@@ -24,7 +24,7 @@ export class AuthController {
 	@Post('logout')
 	async logout(@Res({ passthrough: true }) res: Response) {
 		console.log('logout');
-		
+
 		return this.authService.logout(res);
 	}
 
@@ -32,12 +32,12 @@ export class AuthController {
 	@Get('profile')
 	getProfile(@Request() req) {
 		const userId = req.user._id;
-   	 	return this.authService.getProfile(userId);
+		return this.authService.getProfile(userId);
 	}
 
 	@UseGuards(AuthGuard, RolesGuard)
 	@Get('admin')
 	getSomethingAdminOnly() {
-		return "This is an admin only route";
+		return 'This is an admin only route';
 	}
 }

@@ -33,7 +33,7 @@ export class EnsemblesService {
 		if (!Types.ObjectId.isValid(id)) {
 			throw new BadRequestException(ErrorMessages.INVALID_ENSEMBLE_ID);
 		}
-		return this.ensembleModel.findById(id).populate('owner members pendingRequests').exec();
+		return this.ensembleModel.findById(id).populate('owner').exec();
 	}
 
 	async findByName(name: string): Promise<Ensemble> {
