@@ -104,7 +104,7 @@ export class PostsService {
 			.sort({ [sort]: -1 }) // Sort based on the sort option (descending order)
 			.skip(skip) // Skip posts for pagination
 			.limit(limit) // Limit the number of posts returned
-			.populate('ensemble');
+			.populate('ensemble author');
 	}
 	/**
 	 * Fetch the latest posts with optional limit.
