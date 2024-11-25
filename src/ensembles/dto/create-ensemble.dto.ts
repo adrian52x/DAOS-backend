@@ -7,15 +7,15 @@ export class CreateEnsembleDto {
 	readonly name: string;
 
 	@IsString()
-	@IsOptional()  // Remove optional decorator later
+	@IsNotEmpty()
 	readonly address: string;
 
 	@IsString()
-	@IsOptional() // Remove optional decorator later
+	@IsNotEmpty()
 	readonly zipCode: string;
 
 	@IsString()
-	@IsOptional() // Remove optional decorator later
+	@IsNotEmpty()
 	readonly activeMembers: string;
 
 	readonly owner: string;

@@ -64,7 +64,7 @@ export class EnsemblesService {
 			throw new BadRequestException(ErrorMessages.ENSEMBLE_NOT_FOUND);
 		}
 
-		if (ensemble.owner.toString() !== userId.toString()) {
+		if (ensemble.owner._id.toString() !== userId.toString()) {
 			throw new BadRequestException(ErrorMessages.ONLY_OWNER_CAN_HANDLE_REQUESTS);
 		}
 
@@ -73,10 +73,10 @@ export class EnsemblesService {
 		}
 
 		if (actionDto.action === JoinRequestAction.ACCEPT) {
-			ensemble.pendingRequests = ensemble.pendingRequests.filter((id) => id === handleUserId);
+			ensemble.pendingRequests = ensemble.pendingRequests.filter((id) => id !== handleUserId);
 			ensemble.members.push(handleUserId);
 		} else if (actionDto.action === JoinRequestAction.REJECT) {
-			ensemble.pendingRequests = ensemble.pendingRequests.filter((id) => id === handleUserId);
+			ensemble.pendingRequests = ensemble.pendingRequests.filter((id) => id !== handleUserId);
 		}
 
 		return this.ensembleModel.findByIdAndUpdate(ensembleId, ensemble, { new: true }).exec();
@@ -84,5 +84,9 @@ export class EnsemblesService {
 
 	async findAllUserOwn(userId: string): Promise<Ensemble[]> {
 		return this.ensembleModel.find({ owner: userId }).exec();
+	}
+
+	async findAllUserMember(userId: string): Promise<Ensemble[]> {
+		return this.ensembleModel.find({ members: userId }).exec();
 	}
 }

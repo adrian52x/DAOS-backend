@@ -45,4 +45,11 @@ export class EnsemblesController {
 		const userId = req.user._id;
 		return this.ensemblesService.findAllUserOwn(userId);
 	}
+
+	@Get('/member')
+	@UseGuards(AuthGuard)
+	async findAllUserMember(@Request() req) {
+		const userId = req.user._id;
+		return this.ensemblesService.findAllUserMember(userId);
+	}
 }
