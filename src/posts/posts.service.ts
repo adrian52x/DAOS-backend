@@ -23,14 +23,14 @@ export class PostsService {
 		}
 
 		// In case the post is part of an ensemble, check if the ensemble exists
-		if(createPostDto.ensemble) {
+		if(createPostDto.ensemble) {	
 			const ensemble = await this.ensemblesService.findOneById(createPostDto.ensemble);
 			if (!ensemble) {
 				throw new BadRequestException(ErrorMessages.ENSEMBLE_NOT_FOUND);
 			}
 
 			// Check if the authenticated user is the owner of the ensemble
-			if(ensemble.owner.toString() !== userId.toString()) {
+			if(ensemble.owner._id.toString() !== userId.toString()) {
 				throw new UnauthorizedException(ErrorMessages.NO_PERMISSION_CREATE_POST);
 			}	
 		}	
