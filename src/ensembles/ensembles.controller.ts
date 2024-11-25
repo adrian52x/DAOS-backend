@@ -7,45 +7,43 @@ import { HandleRequestDto } from './dto/handle-request.dto';
 
 @Controller('/api/ensembles')
 export class EnsemblesController {
-    constructor(private readonly ensemblesService: EnsemblesService) {}
+	constructor(private readonly ensemblesService: EnsemblesService) {}
 
-    @Post()
-    @UseGuards(AuthGuard)
-    async create(@Body() createEnsembleDto: CreateEnsembleDto, @Request() req) {
+	@Post()
+	@UseGuards(AuthGuard)
+	async create(@Body() createEnsembleDto: CreateEnsembleDto, @Request() req) {
+		const ownerId = req.user._id; // authenticated user's id
+		return this.ensemblesService.create({ ...createEnsembleDto, owner: ownerId, members: [ownerId] });
+	}
 
-        const ownerId = req.user._id; // authenticated user's id
-        return this.ensemblesService.create({...createEnsembleDto, owner: ownerId, members: [ownerId]});
-    }
+	@Put('/join/:ensembleId')
+	@UseGuards(AuthGuard)
+	async requestToJoin(@Param('ensembleId') ensembleId: string, @Request() req) {
+		const userId = req.user._id;
+		return this.ensemblesService.requestToJoin(ensembleId, userId);
+	}
 
-    @Put('/join/:ensembleId')
-    @UseGuards(AuthGuard)
-    async requestToJoin(@Param('ensembleId') ensembleId: string, @Request() req) {
+	@Put('/:ensembleId/handle-request/:handleUserId/')
+	@UseGuards(AuthGuard)
+	async handleJoinRequest(@Param('ensembleId') ensembleId: string, @Param('handleUserId') handleUserId: string, @Body() actionDto: HandleRequestDto, @Request() req) {
+		const userId = req.user._id;
+		return this.ensemblesService.handleJoinRequest(ensembleId, handleUserId, actionDto, userId);
+	}
 
-        const userId = req.user._id; 
-        return this.ensemblesService.requestToJoin(ensembleId, userId);
-    }     
+	@Get()
+	async findAll() {
+		return this.ensemblesService.findAll();
+	}
 
-    @Put('/:ensembleId/handle-request/:handleUserId/')
-    @UseGuards(AuthGuard)
-    async handleJoinRequest(
-        @Param('ensembleId') ensembleId: string, 
-        @Param('handleUserId') handleUserId: string,  
-        @Body() actionDto: HandleRequestDto, 
-        @Request() req
-    ) {
-        const userId = req.user._id;
-        return this.ensemblesService.handleJoinRequest(ensembleId, handleUserId, actionDto, userId);
-    }
+	@Get(':id')
+	findOne(@Param('id') id: string) {
+		return this.ensemblesService.findOneById(id);
+	}
 
-    @Get()
-    async findAll() {
-        return this.ensemblesService.findAll();
-    }
-
-    @Get("/own")
-    @UseGuards(AuthGuard)
-    async findAllUserOwn(@Request() req) {
-        const userId = req.user._id;
-        return this.ensemblesService.findAllUserOwn(userId);
-    }
+	@Get('/own')
+	@UseGuards(AuthGuard)
+	async findAllUserOwn(@Request() req) {
+		const userId = req.user._id;
+		return this.ensemblesService.findAllUserOwn(userId);
+	}
 }
