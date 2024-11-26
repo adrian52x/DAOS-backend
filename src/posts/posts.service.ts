@@ -43,7 +43,7 @@ export class PostsService {
 		if (!Types.ObjectId.isValid(id)) {
 			throw new BadRequestException(ErrorMessages.INVALID_POST_ID);
 		}
-		return this.postModel.findById(id).populate('ensemble').exec();
+		return this.postModel.findById(id).populate('ensemble author').exec();
 	}
 
 	async update(id: string, updatePostDto: UpdatePostDto, userId: string): Promise<Post> {
