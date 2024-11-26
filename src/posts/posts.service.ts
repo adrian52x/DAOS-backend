@@ -70,7 +70,7 @@ export class PostsService {
 			throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
 		}
 
-		return this.postModel.find({ author: authorId }).exec();
+		return this.postModel.find({ author: authorId }).populate("ensemble").exec();
 	}
 
 	/**
