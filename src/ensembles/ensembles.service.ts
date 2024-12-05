@@ -30,19 +30,16 @@ export class EnsemblesService {
 		return createdEnsemble.save();
 	}
 
-	async update(id: string, updateEnsembleDto: UpdateEnsembleDto, userId: string): Promise<Ensemble> {
-		console.log('ID:', id);
-		console.log('Update DTO:', updateEnsembleDto);
-		console.log('User ID:', userId);
+	async update(ensembleId: string, updateEnsembleDto: UpdateEnsembleDto, userId: string): Promise<Ensemble> {
+		const ensemble = await this.findOneById(ensembleId);
 
-		const ensemble = await this.findOneById(id);
 		if (!ensemble) {
 			throw new BadRequestException('Ensemble not found');
 		}
-		if (ensemble.owner.toString() !== userId.toString()) {
+		if (ensemble.owner._id.toString() !== userId.toString()) {
 			throw new UnauthorizedException('No permission to update this ensemble');
 		}
-		return this.ensembleModel.findByIdAndUpdate(id, updateEnsembleDto, { new: true }).exec();
+		return this.ensembleModel.findByIdAndUpdate(ensembleId, updateEnsembleDto, { new: true }).exec();
 	}
 
 	async findOneById(id: string): Promise<Ensemble> {
