@@ -23,19 +23,19 @@ export class PostsService {
 		}
 
 		// In case the post is part of an ensemble, check if the ensemble exists
-		if(createPostDto.ensemble) {	
+		if (createPostDto.ensemble) {
 			const ensemble = await this.ensemblesService.findOneById(createPostDto.ensemble);
 			if (!ensemble) {
 				throw new BadRequestException(ErrorMessages.ENSEMBLE_NOT_FOUND);
 			}
 
 			// Check if the authenticated user is the owner of the ensemble
-			if(ensemble.owner._id.toString() !== userId.toString()) {
+			if (ensemble.owner._id.toString() !== userId.toString()) {
 				throw new UnauthorizedException(ErrorMessages.NO_PERMISSION_CREATE_POST);
-			}	
-		}	
+			}
+		}
 
-		const createdPost = new this.postModel({...createPostDto, author: user._id});
+		const createdPost = new this.postModel({ ...createPostDto, author: user._id });
 		return createdPost.save();
 	}
 
@@ -49,13 +49,13 @@ export class PostsService {
 	async update(id: string, updatePostDto: UpdatePostDto, userId: string): Promise<Post> {
 		const post = await this.findOneById(id);
 		if (!post) {
-		  throw new BadRequestException(ErrorMessages.POST_NOT_FOUND);
+			throw new BadRequestException(ErrorMessages.POST_NOT_FOUND);
 		}
 		if (post.author.toString() !== userId.toString()) {
-			console.log("User who created the post", post.author);
-			console.log("User who is trying to update", userId);
-			
-		  throw new UnauthorizedException(ErrorMessages.NO_PERMISSION_UPDATE_POST);
+			console.log('User who created the post', post.author);
+			console.log('User who is trying to update', userId);
+
+			throw new UnauthorizedException(ErrorMessages.NO_PERMISSION_UPDATE_POST);
 		}
 		return this.postModel.findByIdAndUpdate(id, updatePostDto, { new: true }).exec();
 	}
@@ -70,7 +70,7 @@ export class PostsService {
 			throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
 		}
 
-		return this.postModel.find({ author: authorId }).populate("ensemble").exec();
+		return this.postModel.find({ author: authorId }).populate('ensemble').exec();
 	}
 
 	/**
@@ -92,7 +92,7 @@ export class PostsService {
 		}
 		if (filters.experience) {
 			filterQuery.experience = { $gte: parseInt(filters.experience, 10) };
-		} 
+		}
 
 		// Pagination logic
 		const skip = (page - 1) * limit;
@@ -115,7 +115,4 @@ export class PostsService {
 			.sort({ createdAt: -1 }) // Sort by creation date (descending)
 			.limit(limit); // Limit the number of posts returned
 	}
-
-
 }
- 

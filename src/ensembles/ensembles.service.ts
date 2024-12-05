@@ -102,7 +102,7 @@ export class EnsemblesService {
 		return this.ensembleModel.find({ owner: userId }).exec();
 	}
 
-	async findAllUserMember(userId: string): Promise<Ensemble[]> {
+	async findEnsemblesByUser(userId: string): Promise<Ensemble[]> {
 		return this.ensembleModel.find({ members: userId }).exec();
 	}
 }

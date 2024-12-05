@@ -12,9 +12,8 @@ export interface Instrument {
 
 @Schema({ timestamps: true }) // Automatically adds createdAt and updatedAt
 export class User {
-	
 	readonly _id: Types.ObjectId;
-	
+
 	@Prop({ required: true })
 	name: string;
 

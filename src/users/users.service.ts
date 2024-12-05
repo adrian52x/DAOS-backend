@@ -21,7 +21,7 @@ export class UsersService {
 			throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
 		}
 		return this.userModel.findByIdAndUpdate(userId, updateUserDto, { new: true }).exec();
-	}	
+	}
 
 	async findAll(): Promise<User[]> {
 		return this.userModel.find().exec();
@@ -34,7 +34,7 @@ export class UsersService {
 	async findOneById(id: string): Promise<User> {
 		if (!Types.ObjectId.isValid(id)) {
 			throw new BadRequestException(ErrorMessages.INVALID_USER_ID);
-		}	
+		}
 		return this.userModel.findById(id).exec();
 	}
 }
