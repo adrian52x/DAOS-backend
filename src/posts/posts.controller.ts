@@ -35,6 +35,11 @@ export class PostsController {
 		return this.postsService.findOneById(id);
 	}
 
+	@Get('/ensemble/:ensembleId')
+	async findAllByEnsemble(@Param('ensembleId') ensembleId: string) {
+		return this.postsService.findAllByEnsembleId(ensembleId);
+	}
+
 	@Get()
 	async getPosts(
 		@Query('limit') limit: string, // limit number of posts (pagination)
