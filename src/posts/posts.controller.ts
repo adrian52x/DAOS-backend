@@ -19,6 +19,8 @@ export class PostsController {
 	@UseGuards(AuthGuard)
 	async update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto, @Request() req) {
 		const userId = req.user._id; // authenticated user's id
+		console.log('Updating Ensemble ID:', id);
+		console.log('Authenticated User ID:', userId);
 		return this.postsService.update(id, updatePostDto, userId);
 	}
 

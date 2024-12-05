@@ -3,6 +3,7 @@ import { EnsemblesService } from './ensembles.service';
 import { CreateEnsembleDto } from './dto/create-ensemble.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { HandleRequestDto } from './dto/handle-request.dto';
+import { UpdateEnsembleDto } from './dto/update-ensemble.dto';
 
 @Controller('/api/ensembles')
 export class EnsemblesController {
@@ -51,5 +52,12 @@ export class EnsemblesController {
 	async findAllUserMember(@Request() req) {
 		const userId = req.user._id;
 		return this.ensemblesService.findAllUserMember(userId);
+	}
+
+	@Put(':id')
+	@UseGuards(AuthGuard)
+	async update(@Param('id') id: string, @Body() updateEnsembleDto: UpdateEnsembleDto, @Request() req) {
+		const userId = req.user._id;
+		return this.ensemblesService.update(id, updateEnsembleDto, userId);
 	}
 }

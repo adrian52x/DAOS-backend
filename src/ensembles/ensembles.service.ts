@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Ensemble, EnsembleDocument } from './schema/ensemble.schema';
@@ -6,6 +6,7 @@ import { CreateEnsembleDto } from './dto/create-ensemble.dto';
 import { UsersService } from '../users/users.service';
 import { HandleRequestDto, JoinRequestAction } from './dto/handle-request.dto';
 import { ErrorMessages } from 'src/constants/error-messages';
+import { UpdateEnsembleDto } from './dto/update-ensemble.dto';
 
 @Injectable()
 export class EnsemblesService {
@@ -27,6 +28,21 @@ export class EnsemblesService {
 
 		const createdEnsemble = new this.ensembleModel(createEnsembleDto);
 		return createdEnsemble.save();
+	}
+
+	async update(id: string, updateEnsembleDto: UpdateEnsembleDto, userId: string): Promise<Ensemble> {
+		console.log('ID:', id);
+		console.log('Update DTO:', updateEnsembleDto);
+		console.log('User ID:', userId);
+
+		const ensemble = await this.findOneById(id);
+		if (!ensemble) {
+			throw new BadRequestException('Ensemble not found');
+		}
+		if (ensemble.owner.toString() !== userId.toString()) {
+			throw new UnauthorizedException('No permission to update this ensemble');
+		}
+		return this.ensembleModel.findByIdAndUpdate(id, updateEnsembleDto, { new: true }).exec();
 	}
 
 	async findOneById(id: string): Promise<Ensemble> {
