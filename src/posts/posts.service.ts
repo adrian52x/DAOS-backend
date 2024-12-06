@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Error, Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Post, PostDocument } from './schema/post.schema';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UsersService } from 'src/users/users.service';
@@ -89,7 +89,7 @@ export class PostsService {
 			console.log('User who created the post', post.author);
 			console.log('User who is trying to update', userId);
 
-			throw new Error(ErrorMessages.NO_PERMISSION_UPDATE_POST);
+			throw new UnauthorizedException(ErrorMessages.NO_PERMISSION_UPDATE_POST);
 		}
 		return this.postModel.findByIdAndUpdate(id, updatePostDto, { new: true }).exec();
 	}
@@ -104,7 +104,7 @@ export class PostsService {
 			throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
 		}
 
-		return this.postModel.find({ author: authorId }).populate('ensemble').exec();
+		return this.postModel.find({ author: authorId }).populate('ensemble author').exec();
 	}
 
 	/**
