@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Error, Model, Types } from 'mongoose';
 import { Post, PostDocument } from './schema/post.schema';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UsersService } from 'src/users/users.service';
@@ -43,7 +43,28 @@ export class PostsService {
 		if (!Types.ObjectId.isValid(id)) {
 			throw new BadRequestException(ErrorMessages.INVALID_POST_ID);
 		}
-		return this.postModel.findById(id).populate('ensemble author').exec();
+		const post = await this.postModel.findById(id)
+			.populate({
+				path: 'ensemble',
+				populate: [
+					{
+						path: 'pendingRequests',
+						model: 'User',
+						select: '_id name'
+					},
+					{
+						path: 'members',
+						model: 'User',
+						select: '_id name'
+					}
+				]
+			})
+			.populate('author')
+			.exec();
+		if (!post) {
+			throw new BadRequestException(ErrorMessages.POST_NOT_FOUND);
+		}
+		return post;
 	}
 
 	async update(id: string, updatePostDto: UpdatePostDto, userId: string): Promise<Post> {
@@ -55,7 +76,7 @@ export class PostsService {
 			console.log('User who created the post', post.author);
 			console.log('User who is trying to update', userId);
 
-			throw new UnauthorizedException(ErrorMessages.NO_PERMISSION_UPDATE_POST);
+			throw new Error(ErrorMessages.NO_PERMISSION_UPDATE_POST);
 		}
 		return this.postModel.findByIdAndUpdate(id, updatePostDto, { new: true }).exec();
 	}
