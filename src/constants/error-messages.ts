@@ -18,6 +18,6 @@ export const enum ErrorMessages {
     ONLY_OWNER_CAN_HANDLE_REQUESTS = 'Only the owner can handle join requests',
     NO_PENDING_REQUEST = 'No pending request from this user',
     
-    
+    INSTRUMENT_ALREADY_EXISTS = 'Instrument with this name already exists: ',
     
 }

@@ -1,5 +1,5 @@
 import { IsString, IsOptional, ValidateNested } from 'class-validator';
-import { InstrumentDto } from './instrument.dto';
+import { InstrumentDto } from '../../instruments/instrument.dto';
 import { Type } from 'class-transformer';
 
 export class UpdatePostDto {

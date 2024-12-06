@@ -20,6 +20,15 @@ export class UsersService {
 		if (!user) {
 			throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
 		}
+
+		if (updateUserDto.instruments) {
+			const newInstrument = updateUserDto.instruments[updateUserDto.instruments.length - 1];
+
+			if (user.instruments.some(instrument => instrument.name === newInstrument.name)) {
+				throw new BadRequestException(ErrorMessages.INSTRUMENT_ALREADY_EXISTS + newInstrument.name);
+			}
+		}
+
 		return this.userModel.findByIdAndUpdate(userId, updateUserDto, { new: true }).exec();
 	}
 

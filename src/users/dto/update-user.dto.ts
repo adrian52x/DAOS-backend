@@ -1,6 +1,6 @@
 import { IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { InstrumentDto } from 'src/posts/dto/instrument.dto';
+import { InstrumentDto } from 'src/instruments/instrument.dto';
 
 export class UpdateUserDto {
 	@IsOptional()

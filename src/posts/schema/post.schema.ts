@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose';
 import { Types } from 'mongoose';
 import { Ensemble } from 'src/ensembles/schema/ensemble.schema';
 import { User } from 'src/users/schema/user.schema';
-import { InstrumentDto } from '../dto/instrument.dto';
+import { InstrumentDto } from '../../instruments/instrument.dto';
 
 export type PostDocument = Post & Document;
 
