@@ -5,7 +5,6 @@ import { Ensemble } from 'src/ensembles/schema/ensemble.schema';
 import { User } from 'src/users/schema/user.schema';
 import { InstrumentDto } from '../dto/instrument.dto';
 
-
 export type PostDocument = Post & Document;
 
 @Schema({ timestamps: true }) // Automatically adds createdAt and updatedAt
@@ -24,7 +23,7 @@ export class Post {
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
 	author: User;
 
-	@Prop({ type: Types.ObjectId, ref: 'Ensemble' }) // Optional ensemble reference
+	@Prop({ type: Types.ObjectId, ref: 'Ensemble' })
 	ensemble: Ensemble;
 }
 

@@ -9,11 +9,13 @@ async function bootstrap() {
 
 	app.useGlobalPipes(new ValidationPipe()); // --> global validation pipe
 
-	app.use(cors({
-		origin: 'http://localhost:5173', // Replace with your frontend's origin
-		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-		credentials: true,
-	}));
+	app.use(
+		cors({
+			origin: 'http://localhost:5173', // Replace with your frontend's origin
+			methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+			credentials: true,
+		})
+	);
 
 	// Use cookie-parser middleware (for session cookies)
 	app.use(cookieParser());

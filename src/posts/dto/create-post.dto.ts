@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, IsOptional, IsArray, IsObject, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, ValidateNested } from 'class-validator';
 import { InstrumentDto } from './instrument.dto';
-
 
 export class CreatePostDto {
 	@IsNotEmpty()

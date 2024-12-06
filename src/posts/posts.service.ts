@@ -67,6 +67,19 @@ export class PostsService {
 		return post;
 	}
 
+	async findAllByEnsembleId(ensembleId: string): Promise<Post[]> {
+		// Validate the ensembleId
+		if (!Types.ObjectId.isValid(ensembleId)) {
+			throw new BadRequestException('Invalid Ensemble ID');
+		}
+
+		// Find posts that have the provided ensembleId
+		return this.postModel
+			.find({ ensemble: ensembleId }) // Filter by ensemble ID
+			.populate('ensemble author') // Populate ensemble and author details
+			.exec();
+	}
+
 	async update(id: string, updatePostDto: UpdatePostDto, userId: string): Promise<Post> {
 		const post = await this.findOneById(id);
 		if (!post) {

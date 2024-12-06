@@ -3,6 +3,7 @@ import { EnsemblesService } from './ensembles.service';
 import { CreateEnsembleDto } from './dto/create-ensemble.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { HandleRequestDto } from './dto/handle-request.dto';
+import { UpdateEnsembleDto } from './dto/update-ensemble.dto';
 
 @Controller('/api/ensembles')
 export class EnsemblesController {
@@ -25,8 +26,17 @@ export class EnsemblesController {
 	@Put('/:ensembleId/handle-request/:handleUserId/')
 	@UseGuards(AuthGuard)
 	async handleJoinRequest(@Param('ensembleId') ensembleId: string, @Param('handleUserId') handleUserId: string, @Body() actionDto: HandleRequestDto, @Request() req) {
+		console.log('Ensemble ID received:', ensembleId); // Log the ID from the URL
+
 		const userId = req.user._id;
 		return this.ensemblesService.handleJoinRequest(ensembleId, handleUserId, actionDto, userId);
+	}
+
+	@Put('/edit/:ensembleId')
+	@UseGuards(AuthGuard)
+	async update(@Param('ensembleId') ensembleId: string, @Body() updateEnsembleDto: UpdateEnsembleDto, @Request() req) {
+		const userId = req.user._id;
+		return this.ensemblesService.update(ensembleId, updateEnsembleDto, userId);
 	}
 
 	@Get()

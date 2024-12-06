@@ -19,6 +19,8 @@ export class PostsController {
 	@UseGuards(AuthGuard)
 	async update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto, @Request() req) {
 		const userId = req.user._id; // authenticated user's id
+		console.log('Updating Ensemble ID:', id);
+		console.log('Authenticated User ID:', userId);
 		return this.postsService.update(id, updatePostDto, userId);
 	}
 
@@ -31,6 +33,11 @@ export class PostsController {
 	@Get(':id')
 	findOne(@Param('id') id: string) {
 		return this.postsService.findOneById(id);
+	}
+
+	@Get('/ensemble/:ensembleId')
+	async findAllByEnsemble(@Param('ensembleId') ensembleId: string) {
+		return this.postsService.findAllByEnsembleId(ensembleId);
 	}
 
 	@Get()

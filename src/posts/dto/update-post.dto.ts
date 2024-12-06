@@ -1,18 +1,17 @@
-import { IsString, IsNotEmpty, IsArray, IsOptional, IsObject, ValidateNested } from 'class-validator';
+import { IsString, IsOptional, ValidateNested } from 'class-validator';
 import { InstrumentDto } from './instrument.dto';
 import { Type } from 'class-transformer';
 
 export class UpdatePostDto {
+	@IsOptional()
+	@IsString()
+	readonly title: string;
 
-    @IsOptional()
-    @IsString()
-    readonly title: string;
+	@IsOptional()
+	@IsString()
+	readonly description: string;
 
-    @IsOptional()
-    @IsString()
-    readonly description: string;
-
-    @IsOptional()
+	@IsOptional()
 	@ValidateNested()
 	@Type(() => InstrumentDto)
 	readonly instrument: InstrumentDto;
