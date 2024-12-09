@@ -42,7 +42,7 @@ export class EnsemblesService {
 		if (!ensemble) {
 			throw new BadRequestException('Ensemble not found');
 		}
-		if (ensemble.owner._id.toString() !== userId.toString()) {
+		if (ensemble.owner.toString() !== userId.toString()) {
 			throw new UnauthorizedException('No permission to update this ensemble');
 		}
 		return this.ensembleModel.findByIdAndUpdate(ensembleId, updateEnsembleDto, { new: true }).exec();

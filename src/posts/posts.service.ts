@@ -31,7 +31,7 @@ export class PostsService {
 			}
 
 			// Check if the authenticated user is the owner of the ensemble
-			if (ensemble.owner._id.toString() !== userId.toString()) {
+			if (ensemble.owner.toString() !== userId.toString()) {
 				throw new UnauthorizedException(ErrorMessages.NO_PERMISSION_CREATE_POST);
 			}
 		}
