@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './schema/user.schema';
@@ -24,12 +24,51 @@ export class UsersService {
 		if (updateUserDto.instruments) {
 			const newInstrument = updateUserDto.instruments[updateUserDto.instruments.length - 1];
 
-			if (user.instruments.some(instrument => instrument.name === newInstrument.name)) {
+			if (user.instruments.some((instrument) => instrument.name === newInstrument.name)) {
 				throw new BadRequestException(ErrorMessages.INSTRUMENT_ALREADY_EXISTS + newInstrument.name);
 			}
 		}
 
 		return this.userModel.findByIdAndUpdate(userId, updateUserDto, { new: true }).exec();
+	}
+
+	async updateInstruments(userId: string, body: any): Promise<User> {
+		// Fetch the user
+		const user = await this.findOneById(userId);
+		if (!user) {
+			throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
+		}
+
+		if (body.action === 'update') {
+			// Find the instrument using its attributes
+			const instrument = user.instruments.find(
+				(inst) => inst.name === body.instrumentData.name && inst.level === body.instrumentData.level && inst.genre === body.instrumentData.genre
+			);
+
+			if (!instrument) {
+				throw new NotFoundException('Instrument not found');
+			}
+
+			// Update the instrument
+			Object.assign(instrument, body.instrumentData);
+		} else if (body.action === 'delete') {
+			// Filter out the instrument to delete
+			const initialLength = user.instruments.length;
+			user.instruments = user.instruments.filter(
+				(inst) => !(inst.name === body.instrumentData.name && inst.level === body.instrumentData.level && inst.genre === body.instrumentData.genre)
+			);
+
+			if (user.instruments.length === initialLength) {
+				throw new NotFoundException('Instrument not found for deletion');
+			}
+		} else {
+			throw new BadRequestException('Invalid action. Use "update" or "delete".');
+		}
+
+		// Save the updated user
+		await this.userModel.updateOne({ _id: userId }, { instruments: user.instruments });
+
+		return user;
 	}
 
 	async findAll(): Promise<User[]> {
