@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import configuration from './configuration';
+import { EnsemblesModule } from './ensembles/ensembles.module';
 
 @Module({
 	imports: [
@@ -17,6 +18,7 @@ import configuration from './configuration';
 		DatabaseModule,
 		UsersModule,
 		PostsModule,
+		EnsemblesModule,
 		AuthModule,
 	],
 })

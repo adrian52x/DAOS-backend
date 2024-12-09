@@ -32,7 +32,7 @@ export class PostsController {
 	// Add this endpoint to fetch a post by ID
 	@Get(':id')
 	findOne(@Param('id') id: string) {
-		return this.postsService.findOneById(id);
+		return this.postsService.findOneByIdPopulated(id);
 	}
 
 	@Get('/ensemble/:ensembleId')

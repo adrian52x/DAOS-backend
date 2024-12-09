@@ -16,20 +16,24 @@ export class EnsemblesController {
 		return this.ensemblesService.create({ ...createEnsembleDto, owner: ownerId, members: [ownerId] });
 	}
 
-	@Put('/join/:ensembleId')
+	@Put('/join/:ensembleId/:postId')
 	@UseGuards(AuthGuard)
-	async requestToJoin(@Param('ensembleId') ensembleId: string, @Request() req) {
+	async requestToJoin(@Param('ensembleId') ensembleId: string, @Param('postId') postId: string, @Request() req) {
 		const userId = req.user._id;
-		return this.ensemblesService.requestToJoin(ensembleId, userId);
+		return this.ensemblesService.requestToJoin(ensembleId, postId, userId);
 	}
 
-	@Put('/:ensembleId/handle-request/:handleUserId/')
+	@Put('/:ensembleId/:postId/handle-request/:handleUserId/')
 	@UseGuards(AuthGuard)
-	async handleJoinRequest(@Param('ensembleId') ensembleId: string, @Param('handleUserId') handleUserId: string, @Body() actionDto: HandleRequestDto, @Request() req) {
-		console.log('Ensemble ID received:', ensembleId); // Log the ID from the URL
-
+	async handleJoinRequest(
+		@Param('ensembleId') ensembleId: string,
+		@Param('postId') postId: string, 
+		@Param('handleUserId') handleUserId: string, 
+		@Body() actionDto: HandleRequestDto, 
+		@Request() req
+	) {
 		const userId = req.user._id;
-		return this.ensemblesService.handleJoinRequest(ensembleId, handleUserId, actionDto, userId);
+		return this.ensemblesService.handleJoinRequest(ensembleId, postId, handleUserId, actionDto, userId);
 	}
 
 	@Put('/edit/:ensembleId')
@@ -46,7 +50,7 @@ export class EnsemblesController {
 
 	@Get('/one/:id')
 	findOne(@Param('id') id: string) {
-		return this.ensemblesService.findOneById(id);
+		return this.ensemblesService.findOneByIdPopulated(id);
 	}
 
 	@Get('/own')
