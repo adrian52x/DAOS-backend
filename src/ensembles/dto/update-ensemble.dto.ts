@@ -16,4 +16,8 @@ export class UpdateEnsembleDto {
 	@IsOptional()
 	@IsString()
 	readonly activeMembers: string;
+
+	@IsOptional()
+	@IsString({ each: true })
+	readonly members: string[];
 }
