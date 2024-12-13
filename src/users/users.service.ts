@@ -32,20 +32,21 @@ export class UsersService {
 		return this.userModel.findByIdAndUpdate(userId, updateUserDto, { new: true }).exec();
 	}
 
-	async deleteInstrument(userId: string, instrumentData: { name: string }): Promise<User> {
+	async deleteInstrument(userId: string, instrumentData: { name: string; level: number }): Promise<User> {
 		const user = await this.findOneById(userId);
 		if (!user) {
 			throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
 		}
 
 		const initialLength = user.instruments.length;
-		user.instruments = user.instruments.filter((inst) => inst.name !== instrumentData.name);
+		user.instruments = user.instruments.filter((inst) => !(inst.name === instrumentData.name && inst.level === instrumentData.level));
 
 		if (user.instruments.length === initialLength) {
 			throw new NotFoundException(ErrorMessages.INSTRUMENT_DOES_NOT_EXIST);
 		}
 
 		await this.userModel.updateOne({ _id: userId }, { instruments: user.instruments });
+
 		return this.findOneById(userId);
 	}
 
