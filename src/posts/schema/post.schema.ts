@@ -32,6 +32,9 @@ export class Post {
 
 	@Prop({ type: Types.ObjectId, ref: 'Ensemble' })
 	ensemble: Ensemble;
+
+	@Prop({ type: [{ type: Types.ObjectId, ref: 'User' }] })
+	pendingRequests: string[];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

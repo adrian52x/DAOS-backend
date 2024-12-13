@@ -24,8 +24,6 @@ export class Ensemble {
 	@Prop({ type: [{ type: Types.ObjectId, ref: 'User' }] })
 	members: string[];
 
-	@Prop({ type: [{ type: Types.ObjectId, ref: 'User' }] })
-	pendingRequests: string[];
 }
 
 export const EnsembleSchema = SchemaFactory.createForClass(Ensemble);

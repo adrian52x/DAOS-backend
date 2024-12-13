@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Post, PostDocument } from './schema/post.schema';
@@ -13,6 +13,7 @@ export class PostsService {
 	constructor(
 		@InjectModel(Post.name) private postModel: Model<PostDocument>,
 		private readonly usersService: UsersService,
+		@Inject(forwardRef(() => EnsemblesService))
 		private readonly ensemblesService: EnsemblesService
 	) {}
 
@@ -30,7 +31,7 @@ export class PostsService {
 			}
 
 			// Check if the authenticated user is the owner of the ensemble
-			if (ensemble.owner._id.toString() !== userId.toString()) {
+			if (ensemble.owner.toString() !== userId.toString()) {
 				throw new UnauthorizedException(ErrorMessages.NO_PERMISSION_CREATE_POST);
 			}
 		}
@@ -39,7 +40,7 @@ export class PostsService {
 		return createdPost.save();
 	}
 
-	async findOneById(id: string): Promise<Post> {
+	async findOneByIdPopulated(id: string): Promise<Post> {
 		if (!Types.ObjectId.isValid(id)) {
 			throw new BadRequestException(ErrorMessages.INVALID_POST_ID);
 		}
@@ -48,11 +49,6 @@ export class PostsService {
 				path: 'ensemble',
 				populate: [
 					{
-						path: 'pendingRequests',
-						model: 'User',
-						select: '_id name'
-					},
-					{
 						path: 'members',
 						model: 'User',
 						select: '_id name'
@@ -60,7 +56,23 @@ export class PostsService {
 				]
 			})
 			.populate('author')
+			.populate({
+				path: 'pendingRequests',
+				model: 'User',
+				select: '_id name'
+			})
 			.exec();
+		if (!post) {
+			throw new BadRequestException(ErrorMessages.POST_NOT_FOUND);
+		}
+		return post;
+	}
+
+	async findOneById(id: string): Promise<Post> {
+		if (!Types.ObjectId.isValid(id)) {
+			throw new BadRequestException(ErrorMessages.INVALID_POST_ID);
+		}
+		const post = await this.postModel.findById(id).exec();
 		if (!post) {
 			throw new BadRequestException(ErrorMessages.POST_NOT_FOUND);
 		}
