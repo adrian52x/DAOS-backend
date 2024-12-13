@@ -24,13 +24,9 @@ export class UsersService {
 		if (updateUserDto.instruments) {
 			const newInstrument = updateUserDto.instruments[updateUserDto.instruments.length - 1];
 
-			// Check if an instrument with the same name and level exists
-			if (user.instruments.some((instrument) => instrument.name === newInstrument.name && instrument.level === newInstrument.level)) {
+			if (user.instruments.some((instrument) => instrument.name === newInstrument.name)) {
 				throw new BadRequestException(ErrorMessages.INSTRUMENT_ALREADY_EXISTS + newInstrument.name);
 			}
-
-			// Add alert logic here
-			console.log('Instrument Added:', newInstrument); // Backend alert
 		}
 
 		return this.userModel.findByIdAndUpdate(userId, updateUserDto, { new: true }).exec();
@@ -54,12 +50,7 @@ export class UsersService {
 		// Update the database
 		await this.userModel.updateOne({ _id: userId }, { instruments: user.instruments });
 
-		// Log successful deletion
-		console.log('Instrument Deleted:', instrumentData);
-
-		// Return updated user
-		const updatedUser = await this.findOneById(userId);
-		return updatedUser;
+		return this.findOneById(userId);
 	}
 
 	async findAll(): Promise<User[]> {
