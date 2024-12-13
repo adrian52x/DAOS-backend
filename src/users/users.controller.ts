@@ -15,12 +15,12 @@ export class UsersController {
 		return this.usersService.update(updateUserDto, userId);
 	}
 
-	// Update or delete instruments
+	// Delete instruments
 	@Patch()
 	@UseGuards(AuthGuard)
-	async updateInstruments(@Body() body: any, @Request() req) {
+	async deleteInstrument(@Body() body: { name: string; level: number }, @Request() req) {
 		const userId = req.user._id;
-		return this.usersService.updateInstruments(userId, body);
+		return this.usersService.deleteInstrument(userId, body);
 	}
 
 	// Get all users

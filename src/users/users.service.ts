@@ -24,55 +24,42 @@ export class UsersService {
 		if (updateUserDto.instruments) {
 			const newInstrument = updateUserDto.instruments[updateUserDto.instruments.length - 1];
 
-			// Check if an instrument with the same name exists
-			if (user.instruments.some((instrument) => instrument.name === newInstrument.name)) {
+			// Check if an instrument with the same name and level exists
+			if (user.instruments.some((instrument) => instrument.name === newInstrument.name && instrument.level === newInstrument.level)) {
 				throw new BadRequestException(ErrorMessages.INSTRUMENT_ALREADY_EXISTS + newInstrument.name);
 			}
+
+			// Add alert logic here
+			console.log('Instrument Added:', newInstrument); // Backend alert
 		}
 
 		return this.userModel.findByIdAndUpdate(userId, updateUserDto, { new: true }).exec();
 	}
 
-	async updateInstruments(userId: string, body: any): Promise<User> {
-		// Fetch the user
+	async deleteInstrument(userId: string, instrumentData: { name: string; level: number }): Promise<User> {
+		// Validate user existence
 		const user = await this.findOneById(userId);
 		if (!user) {
 			throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
 		}
 
-		if (body.action === 'update') {
-			// Find the instrument using its attributes
-			const instrument = user.instruments.find(
-				(inst) => inst.name === body.instrumentData.name && inst.level === body.instrumentData.level && this.isSameGenreArray(inst.genre, body.instrumentData.genre) // Compare genre arrays
-			);
+		// Filter out the instrument by name and level
+		const initialLength = user.instruments.length;
+		user.instruments = user.instruments.filter((inst) => !(inst.name === instrumentData.name && inst.level === instrumentData.level));
 
-			if (!instrument) {
-				throw new NotFoundException('Instrument not found');
-			}
-
-			// Update the instrument
-			Object.assign(instrument, body.instrumentData);
-		} else if (body.action === 'delete') {
-			// Filter out the instrument to delete
-			const initialLength = user.instruments.length;
-			user.instruments = user.instruments.filter(
-				(inst) =>
-					!(
-						(inst.name === body.instrumentData.name && inst.level === body.instrumentData.level && this.isSameGenreArray(inst.genre, body.instrumentData.genre)) // Compare genre arrays
-					)
-			);
-
-			if (user.instruments.length === initialLength) {
-				throw new NotFoundException('Instrument not found for deletion');
-			}
-		} else {
-			throw new BadRequestException('Invalid action. Use "update" or "delete".');
+		if (user.instruments.length === initialLength) {
+			throw new NotFoundException('Instrument not found for deletion');
 		}
 
-		// Save the updated user
+		// Update the database
 		await this.userModel.updateOne({ _id: userId }, { instruments: user.instruments });
 
-		return user;
+		// Log successful deletion
+		console.log('Instrument Deleted:', instrumentData);
+
+		// Return updated user
+		const updatedUser = await this.findOneById(userId);
+		return updatedUser;
 	}
 
 	async findAll(): Promise<User[]> {
@@ -88,13 +75,5 @@ export class UsersService {
 			throw new BadRequestException(ErrorMessages.INVALID_USER_ID);
 		}
 		return this.userModel.findById(id).exec();
-	}
-
-	// Helper method to compare two genre arrays
-	private isSameGenreArray(genres1: string[], genres2: string[]): boolean {
-		if (genres1.length !== genres2.length) return false;
-		const sorted1 = [...genres1].sort();
-		const sorted2 = [...genres2].sort();
-		return sorted1.every((value, index) => value === sorted2[index]);
 	}
 }
