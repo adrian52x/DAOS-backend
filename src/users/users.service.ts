@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './schema/user.schema';
@@ -24,12 +24,28 @@ export class UsersService {
 		if (updateUserDto.instruments) {
 			const newInstrument = updateUserDto.instruments[updateUserDto.instruments.length - 1];
 
-			if (user.instruments.some(instrument => instrument.name === newInstrument.name)) {
+			if (user.instruments.some((instrument) => instrument.name === newInstrument.name)) {
 				throw new BadRequestException(ErrorMessages.INSTRUMENT_ALREADY_EXISTS + newInstrument.name);
 			}
 		}
 
 		return this.userModel.findByIdAndUpdate(userId, updateUserDto, { new: true }).exec();
+	}
+
+	async deleteInstrument(userId: string, instrumentName: string): Promise<User> {
+		const user = await this.findOneById(userId);
+		if (!user) {
+			throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
+		}
+
+		const doesInstrumentExists = !!user.instruments.find((inst) => inst.name === instrumentName);
+		if (!doesInstrumentExists) throw new NotFoundException(ErrorMessages.INSTRUMENT_DOES_NOT_EXIST);
+
+		user.instruments = user.instruments.filter((inst) => inst.name !== instrumentName);
+
+		await this.userModel.updateOne({ _id: userId }, { instruments: user.instruments });
+
+		return this.findOneById(userId);
 	}
 
 	async findAll(): Promise<User[]> {

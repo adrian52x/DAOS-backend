@@ -17,7 +17,14 @@ export class Post {
 	@Prop({ required: true })
 	description: string;
 
-	@Prop({ type: { name: String, level: Number, genre: String, _id: false } })
+	@Prop({
+		type: {
+			name: { type: String, required: true },
+			level: { type: Number, required: true },
+			genre: { type: [String], required: true },
+			_id: false,
+		},
+	})
 	instrument: InstrumentDto;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })

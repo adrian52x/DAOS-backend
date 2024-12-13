@@ -1,15 +1,16 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsArray, ArrayNotEmpty } from 'class-validator';
 
 export class InstrumentDto {
-  @IsNotEmpty()
-  @IsString()
-  readonly name: string;
+	@IsNotEmpty()
+	@IsString()
+	readonly name: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly level: number;
+	@IsNotEmpty()
+	@IsNumber()
+	readonly level: number;
 
-  @IsNotEmpty()
-  @IsString()
-  readonly genre: string;
+	@IsArray()
+	@ArrayNotEmpty()
+	@IsString({ each: true })
+	readonly genre: string[];
 }
