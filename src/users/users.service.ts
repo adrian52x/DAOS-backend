@@ -46,7 +46,6 @@ export class UsersService {
 		}
 
 		await this.userModel.updateOne({ _id: userId }, { instruments: user.instruments });
-
 		return this.findOneById(userId);
 	}
 
