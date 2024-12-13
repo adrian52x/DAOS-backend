@@ -7,7 +7,7 @@ export type UserDocument = User & Document;
 export interface Instrument {
 	name: string;
 	level: number;
-	genre: string;
+	genre: string[];
 }
 
 @Schema({ timestamps: true }) // Automatically adds createdAt and updatedAt
@@ -38,7 +38,7 @@ export class User {
 	@Prop()
 	dateOfBirth: Date;
 
-	@Prop({ type: [{ name: String, level: Number, genre: String, _id: false }] })
+	@Prop({ type: [{ name: String, level: Number, genre: [String], _id: false }] })
 	instruments: InstrumentDto[];
 }
 
