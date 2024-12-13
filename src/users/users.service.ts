@@ -24,6 +24,7 @@ export class UsersService {
 		if (updateUserDto.instruments) {
 			const newInstrument = updateUserDto.instruments[updateUserDto.instruments.length - 1];
 
+			// Check if an instrument with the same name exists
 			if (user.instruments.some((instrument) => instrument.name === newInstrument.name)) {
 				throw new BadRequestException(ErrorMessages.INSTRUMENT_ALREADY_EXISTS + newInstrument.name);
 			}
@@ -42,7 +43,7 @@ export class UsersService {
 		if (body.action === 'update') {
 			// Find the instrument using its attributes
 			const instrument = user.instruments.find(
-				(inst) => inst.name === body.instrumentData.name && inst.level === body.instrumentData.level && inst.genre === body.instrumentData.genre
+				(inst) => inst.name === body.instrumentData.name && inst.level === body.instrumentData.level && this.isSameGenreArray(inst.genre, body.instrumentData.genre) // Compare genre arrays
 			);
 
 			if (!instrument) {
@@ -55,7 +56,10 @@ export class UsersService {
 			// Filter out the instrument to delete
 			const initialLength = user.instruments.length;
 			user.instruments = user.instruments.filter(
-				(inst) => !(inst.name === body.instrumentData.name && inst.level === body.instrumentData.level && inst.genre === body.instrumentData.genre)
+				(inst) =>
+					!(
+						(inst.name === body.instrumentData.name && inst.level === body.instrumentData.level && this.isSameGenreArray(inst.genre, body.instrumentData.genre)) // Compare genre arrays
+					)
 			);
 
 			if (user.instruments.length === initialLength) {
@@ -84,5 +88,13 @@ export class UsersService {
 			throw new BadRequestException(ErrorMessages.INVALID_USER_ID);
 		}
 		return this.userModel.findById(id).exec();
+	}
+
+	// Helper method to compare two genre arrays
+	private isSameGenreArray(genres1: string[], genres2: string[]): boolean {
+		if (genres1.length !== genres2.length) return false;
+		const sorted1 = [...genres1].sort();
+		const sorted2 = [...genres2].sort();
+		return sorted1.every((value, index) => value === sorted2[index]);
 	}
 }
