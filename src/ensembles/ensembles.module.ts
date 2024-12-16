@@ -9,17 +9,17 @@ import { Post, PostSchema } from 'src/posts/schema/post.schema';
 import { PostsModule } from 'src/posts/posts.module';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Ensemble.name, schema: EnsembleSchema },
-      { name: Post.name, schema: PostSchema }
-    ]),
-    UsersModule,
-    JwtModule,
-    forwardRef(() => PostsModule),  //https://docs.nestjs.com/fundamentals/circular-dependency
-  ],
-  controllers: [EnsemblesController],
-  providers: [EnsemblesService],
-  exports: [EnsemblesService],
+	imports: [
+		MongooseModule.forFeature([
+			{ name: Ensemble.name, schema: EnsembleSchema },
+			{ name: Post.name, schema: PostSchema },
+		]),
+		UsersModule,
+		JwtModule,
+		forwardRef(() => PostsModule), //https://docs.nestjs.com/fundamentals/circular-dependency
+	],
+	controllers: [EnsemblesController],
+	providers: [EnsemblesService],
+	exports: [EnsemblesService],
 })
 export class EnsemblesModule {}

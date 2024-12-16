@@ -18,9 +18,9 @@ export class UsersController {
 	// Delete instruments
 	@Patch()
 	@UseGuards(AuthGuard)
-	async deleteInstrument(@Body() body: { name: string; level: number }, @Request() req) {
+	async deleteInstrument(@Body() body: { instrumentName: string }, @Request() req) {
 		const userId = req.user._id;
-		return this.usersService.deleteInstrument(userId, body);
+		return this.usersService.deleteInstrument(userId, body.instrumentName);
 	}
 
 	// Get all users
