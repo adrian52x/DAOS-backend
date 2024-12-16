@@ -40,20 +40,27 @@ export class PostsController {
 		return this.postsService.findAllByEnsembleId(ensembleId);
 	}
 
-	@Get()
+	@Post('filter')
 	async getPosts(
 		@Query('limit') limit: string, // limit number of posts (pagination)
 		@Query('page') page: string, // page number (pagination)
-		@Query('area') area: string, // filter by area
-		@Query('instrument') instrument: string, // filter by instrument
-		@Query('experience') experience: string, // filter by experience level
-		@Query('sort') sort: string // sorting (e.g., 'date', 'experience')
+		@Query('sort') sort: string, // sorting (e.g., 'date', 'experience')
+		@Body() body: {
+			type?: string;
+			title?: string;
+			instrument?: string;
+			genre?: string;
+		  }
 	) {
-		const postLimit = parseInt(limit, 10) || 0; // default to 5 posts per request
+		const { type, title, instrument, genre } = body;
+
+		const postLimit = parseInt(limit, 10) || 0; // default - all posts 
 		const postPage = parseInt(page, 10) || 1; // default to page 1
-		const filters = { area, instrument, experience }; // filters for post search
 		const sortOption = sort || 'createdAt'; // default sort by creation date
-		// Fetch filtered and paginated posts from the service
+
+		const filters: any = { type, title, instrument, genre};
+
+
 		return this.postsService.getFilteredPosts(postLimit, postPage, filters, sortOption);
 	}
 }

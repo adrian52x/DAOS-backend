@@ -123,23 +123,44 @@ export class PostsService {
 	 * Fetch posts with pagination, filtering, and sorting options.
 	 * @param limit - number of posts to return per page
 	 * @param page - page number for pagination
-	 * @param filters - object containing the filters (e.g., area, instrument, etc.)
 	 * @param sortOption - field to sort by (e.g., createdAt, experience)
+	 * @param filters - object containing the filters (e.g., type, title, instrument, address, zipcode)
+
 	 */
 	async getFilteredPosts(limit: number, page: number, filters: any, sortOption: string): Promise<Post[]> {
 		// Build query based on filters
 		const filterQuery: any = {};
-		// Add filters dynamically to the query
-		if (filters.area) {
-			filterQuery.area = { $regex: filters.area, $options: 'i' }; // case-insensitive search
-		}
-		if (filters.instrument) {
-			filterQuery.instrument = { $in: filters.instrument.split(',') }; // split instruments if multiple values are provided
-		}
-		if (filters.experience) {
-			filterQuery.experience = { $gte: parseInt(filters.experience, 10) };
+		
+		// Filter by type (ensemble or individual)
+		if (filters.type) {
+			if (filters.type === 'Find ensembles') {
+			  filterQuery.ensemble = { $exists: true };
+			} else if (filters.type === 'Find musicians') {
+			  filterQuery.ensemble = { $exists: false };
+			}
 		}
 
+		// Filter by keywords in title
+		if (filters.title) {
+			const queryRegx = new RegExp(filters.title, 'i');
+			filterQuery.$or = [
+				{ title: { $regex: queryRegx } }, // case-insensitive search in title
+				{ description: { $regex: queryRegx } } // case-insensitive search in description
+			];
+		}
+	  
+		// Filter by instrument name
+		if (filters.instrument) {
+			filterQuery['instrument.name'] = filters.instrument; // Single instrument name
+		}
+
+		// Filter by genre
+		if (filters.genre) {
+			filterQuery['instrument.genre'] = filters.genre; // Single genre
+		}
+	  
+		console.log('Filter Query:', filterQuery);
+		
 		// Pagination logic
 		const skip = (page - 1) * limit;
 		// Sorting option (default to sorting by createdAt if not specified)

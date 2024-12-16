@@ -27,7 +27,7 @@ export class Post {
 	})
 	instrument: InstrumentDto;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true })
 	author: User;
 
 	@Prop({ type: Types.ObjectId, ref: 'Ensemble' })
