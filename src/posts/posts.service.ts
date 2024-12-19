@@ -1,4 +1,4 @@
-import { BadRequestException, forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Post, PostDocument } from './schema/post.schema';
@@ -182,4 +182,17 @@ export class PostsService {
 			.sort({ createdAt: -1 }) // Sort by creation date (descending)
 			.limit(limit); // Limit the number of posts returned
 	}
+
+	async deletePost(userId: string, postId: string): Promise<void> {
+		const post = await this.postModel.findById(postId);
+		if (!post) {
+		  throw new NotFoundException(ErrorMessages.POST_NOT_FOUND);
+		}
+	  
+		if (post.author.toString() !== userId) {
+		  throw new ForbiddenException(ErrorMessages.NO_PERMISSION_DELETE_POST);
+		}
+	  
+		await this.postModel.deleteOne({ _id: postId }); // Delete the post from the database
+	  }
 }

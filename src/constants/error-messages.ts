@@ -9,6 +9,8 @@ export const enum ErrorMessages {
 	INVALID_POST_ID = 'Invalid post ID',
 	NO_PERMISSION_UPDATE_POST = 'You do not have permission to update this post',
 	NO_PERMISSION_CREATE_POST = 'You do not have permission to create a post in this ensemble',
+	NO_PERMISSION_DELETE_POST = 'You do not have permission to delete this post',
+
 
 	ENSEMBLE_NOT_FOUND = 'Ensemble not found',
 	ENSEMBLE_EXISTS = 'Ensemble with this name already exists',
