@@ -3,6 +3,9 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
+//to use the test connectin string
+process.env.MONGO_URI = process.env.TEST_MONGO_URI || 'mongodb://localhost:27017/daos-e2e-test';
+
 describe('AppController (e2e)', () => {
 	let app: INestApplication;
 
