@@ -4,8 +4,8 @@ import { UsersService } from '../users/users.service';
 import { User } from '../users/schema/user.schema';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { LoginDto } from 'src/users/dto/login.dto';
-import { ErrorMessages } from 'src/constants/error-messages';
+import { LoginDto } from '../users/dto/login.dto';
+import { ErrorMessages } from '../constants/error-messages';
 import { Response } from 'express';
 
 @Injectable()

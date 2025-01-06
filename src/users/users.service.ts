@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './schema/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
-import { ErrorMessages } from 'src/constants/error-messages';
+import { ErrorMessages } from '../constants/error-messages';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -61,5 +61,9 @@ export class UsersService {
 			throw new BadRequestException(ErrorMessages.INVALID_USER_ID);
 		}
 		return this.userModel.findById(id).exec();
+	}
+
+	async deleteMany() {
+		return this.userModel.deleteMany({}).exec();
 	}
 }

@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Post, Get, Request, UseGuards, Res } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { LoginDto } from 'src/users/dto/login.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { LoginDto } from '../users/dto/login.dto';
 import { AuthGuard } from './auth.guard';
 import { RolesGuard } from './roles.guard';
 import { Response } from 'express';

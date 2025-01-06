@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, UseGuards, Request, Put, Param } from '@nestjs/common';
 import { EnsemblesService } from './ensembles.service';
 import { CreateEnsembleDto } from './dto/create-ensemble.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { HandleRequestDto } from './dto/handle-request.dto';
 import { UpdateEnsembleDto } from './dto/update-ensemble.dto';
 

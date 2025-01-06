@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { User } from 'src/users/schema/user.schema';
+import { User } from '../../users/schema/user.schema';
 
 export type EnsembleDocument = Ensemble & Document;
 

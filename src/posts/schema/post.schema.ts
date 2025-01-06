@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Types } from 'mongoose';
-import { Ensemble } from 'src/ensembles/schema/ensemble.schema';
-import { User } from 'src/users/schema/user.schema';
+import { Ensemble } from '../../ensembles/schema/ensemble.schema';
+import { User } from '../../users/schema/user.schema';
 import { InstrumentDto } from '../../instruments/instrument.dto';
 
 export type PostDocument = Post & Document;

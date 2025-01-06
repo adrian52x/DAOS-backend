@@ -5,10 +5,10 @@ import { Ensemble, EnsembleDocument } from './schema/ensemble.schema';
 import { CreateEnsembleDto } from './dto/create-ensemble.dto';
 import { UsersService } from '../users/users.service';
 import { HandleRequestDto, JoinRequestAction } from './dto/handle-request.dto';
-import { ErrorMessages } from 'src/constants/error-messages';
+import { ErrorMessages } from '../constants/error-messages';
 import { UpdateEnsembleDto } from './dto/update-ensemble.dto';
-import { PostsService } from 'src/posts/posts.service';
-import { Post } from 'src/posts/schema/post.schema';
+import { PostsService } from '../posts/posts.service';
+import { Post } from '../posts/schema/post.schema';
 
 @Injectable()
 export class EnsemblesService {

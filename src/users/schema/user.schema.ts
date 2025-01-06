@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { InstrumentDto } from 'src/instruments/instrument.dto';
+import { InstrumentDto } from '../../instruments/instrument.dto';
 
 export type UserDocument = User & Document;
 

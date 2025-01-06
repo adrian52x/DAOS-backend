@@ -3,10 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Post, PostDocument } from './schema/post.schema';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { EnsemblesService } from 'src/ensembles/ensembles.service';
-import { ErrorMessages } from 'src/constants/error-messages';
+import { EnsemblesService } from '../ensembles/ensembles.service';
+import { ErrorMessages } from '../constants/error-messages';
 
 @Injectable()
 export class PostsService {

@@ -3,9 +3,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
 import { Post, PostSchema } from './schema/post.schema';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
-import { EnsemblesModule } from 'src/ensembles/ensembles.module';
+import { EnsemblesModule } from '../ensembles/ensembles.module';
 
 @Module({
 	imports: [

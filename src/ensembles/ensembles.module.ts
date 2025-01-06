@@ -5,8 +5,8 @@ import { EnsemblesController } from './ensembles.controller';
 import { Ensemble, EnsembleSchema } from './schema/ensemble.schema';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
-import { Post, PostSchema } from 'src/posts/schema/post.schema';
-import { PostsModule } from 'src/posts/posts.module';
+import { Post, PostSchema } from '../posts/schema/post.schema';
+import { PostsModule } from '../posts/posts.module';
 
 @Module({
 	imports: [
