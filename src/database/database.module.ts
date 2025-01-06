@@ -2,21 +2,23 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-//https://docs.nestjs.com/techniques/configuration
 
 @Module({
 	imports: [
 		MongooseModule.forRootAsync({
 			inject: [ConfigService],
-			useFactory: async (configService: ConfigService) => ({
-				uri: configService.get<string>('database.uri'), // --> get a custom configuration value
-				//uri: configService.get<string>('MONGO_URI'),  // --> get an environment variable
+			useFactory: async (configService: ConfigService) => {
+				const isTestEnvironment = process.env.NODE_ENV === 'test';
+				const uri = isTestEnvironment ? configService.get<string>('TEST_MONGO_URI') : configService.get<string>('MONGO_URI');
 
-				onConnectionCreate: (connection: Connection) => {
-					connection.on('connected', () => console.log(`Connected to ${connection.name} database. URI: ${connection.host}`));
-					return connection;
-				},
-			}),
+				return {
+					uri,
+					onConnectionCreate: (connection: Connection) => {
+						connection.on('connected', () => console.log(`Connected to ${isTestEnvironment ? 'test' : 'main'} database: ${connection.host}`));
+						return connection;
+					},
+				};
+			},
 		}),
 	],
 })
