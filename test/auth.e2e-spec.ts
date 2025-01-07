@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { CreateUserDto } from '../src/users/dto/create-user.dto';
 import { TestModule } from '../src/test.module';
@@ -20,7 +20,6 @@ describe('AuthController (e2e)', () => {
 		authService = moduleFixture.get<AuthService>(AuthService);
 
 		app = moduleFixture.createNestApplication();
-		app.useGlobalPipes(new ValidationPipe());
 
 		await app.init();
 		await userService.deleteMany();

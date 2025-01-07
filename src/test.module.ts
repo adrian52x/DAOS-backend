@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { EnsemblesModule } from './ensembles/ensembles.module';
@@ -6,6 +6,7 @@ import { PostsModule } from './posts/posts.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './configuration';
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
 	imports: [
@@ -23,6 +24,12 @@ import configuration from './configuration';
 		PostsModule,
 		EnsemblesModule,
 		AuthModule,
+	],
+	providers: [
+		{
+			provide: APP_PIPE,
+			useClass: ValidationPipe, // Global validation pipe
+		},
 	],
 })
 export class TestModule {}
