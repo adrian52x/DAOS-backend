@@ -27,9 +27,12 @@ jobs:
         run: npm install
 
       - name: Set up environment variables
-        run: echo "TEST_MONGO_URI=${{ secrets.TEST_MONGO_URI }}" >> $GITHUB_ENV
+        run: |
+          echo "TEST_MONGO_URI=${{ secrets.TEST_MONGO_URI }}" >> $GITHUB_ENV
+          echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> $GITHUB_ENV
 
       - name: Run tests
         run: npm run test:e2e
         env:
           TEST_MONGO_URI: ${{ secrets.TEST_MONGO_URI }}
+          JWT_KEY: ${{ secrets.JWT_KEY }}
