@@ -35,9 +35,9 @@ export class AuthService {
 		// access_token in cookies
 		res.cookie('access_token', accessToken);
 
-	    // Return the user without the password
-		const userWithoutPassword = { ...JSON.parse(JSON.stringify(validatedUser)), password: undefined, access_token: accessToken };
-    	return userWithoutPassword;
+		// Return the user without the password
+		const userWithoutPassword = { ...JSON.parse(JSON.stringify(validatedUser)), password: undefined };
+		return userWithoutPassword;
 	}
 
 	async register(user: CreateUserDto, res: any): Promise<any> {
@@ -47,7 +47,7 @@ export class AuthService {
 				throw new BadRequestException(ErrorMessages.EMAIL_EXISTS);
 			}
 			const hashedPassword = await bcrypt.hash(user.password, 10);
-			
+
 			const newUser: CreateUserDto = { ...user, password: hashedPassword };
 			await this.usersService.create(newUser);
 			return this.login({ email: user.email, password: user.password }, res);
@@ -62,7 +62,7 @@ export class AuthService {
 	async logout(res: Response): Promise<any> {
 		// Clear the access_token cookie
 		console.log('logout service');
-		
+
 		res.clearCookie('access_token');
 		return { message: 'Logout successful' };
 	}
@@ -70,11 +70,11 @@ export class AuthService {
 	async getProfile(userId: string): Promise<any> {
 		const user = await this.usersService.findOneById(userId);
 		if (!user) {
-		  throw new UnauthorizedException(ErrorMessages.USER_NOT_FOUND);
+			throw new UnauthorizedException(ErrorMessages.USER_NOT_FOUND);
 		}
-	
+
 		// Convert the Mongoose document to a plain object and remove the password field
 		const userWithoutPassword = { ...JSON.parse(JSON.stringify(user)), password: undefined };
-    	return userWithoutPassword;
+		return userWithoutPassword;
 	}
 }
