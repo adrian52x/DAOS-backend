@@ -38,6 +38,7 @@ export class AuthService {
 	    // Return the user without the password
 		const userWithoutPassword = { ...JSON.parse(JSON.stringify(validatedUser)), password: undefined, access_token: accessToken };
     	return userWithoutPassword;
+		// test
 	}
 
 	async register(user: CreateUserDto, res: any): Promise<any> {
