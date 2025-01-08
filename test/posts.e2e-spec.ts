@@ -16,7 +16,7 @@ describe('PostController E2E test', () => {
 	let ensembleId: string;
 	let postId: string;
 	let userId: string;
-	// let postBody: string;
+
 	let postService: PostsService;
 	let ensemblesService: EnsemblesService;
 	let userService: UsersService;
@@ -153,6 +153,44 @@ describe('PostController E2E test', () => {
 
 			// check the timestamp for update (to verify it was modified)
 			expect(new Date(response.body.updatedAt).getTime()).toBeGreaterThan(new Date(response.body.createdAt).getTime());
+		});
+	});
+
+	describe('Filtering posts, POST /api/posts/filter [there is only 1 post]', () => {
+		it('should return only posts with type: Find ensembles and instrument: Guitar ', async () => {
+			const filterData = {
+				type: 'Find ensembles',
+				instrument: 'Guitar',
+			};
+	
+			// Act: Make the request
+			const response = await request(app.getHttpServer())
+				.post('/api/posts/filter')
+				.send(filterData);
+
+			// Assert: Verify response
+			expect(response.body).toBeInstanceOf(Array);
+			expect(response.body.length).toBe(1); 
+			expect(response.body[0]).toHaveProperty('ensemble');
+			expect(response.body[0]).toHaveProperty('instrument'); 
+			expect(response.body[0].instrument.name).toBe('Guitar'); 
+		});
+
+
+		it('should return only posts with type: Find musicians and genre: Jazz ', async () => {
+			const filterData = {
+				type: 'Find musicians',
+				genre: 'Jazz',
+			};
+	
+			// Act: Make the request
+			const response = await request(app.getHttpServer())
+				.post('/api/posts/filter')
+				.send(filterData);
+
+			// Assert: Verify response
+			expect(response.body).toBeInstanceOf(Array);
+			expect(response.body.length).toBe(0); 
 		});
 	});
 });

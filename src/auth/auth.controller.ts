@@ -4,7 +4,6 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from '../users/dto/login.dto';
 import { AuthGuard } from './auth.guard';
-import { RolesGuard } from './roles.guard';
 import { Response } from 'express';
 
 @Controller('auth')
@@ -33,11 +32,5 @@ export class AuthController {
 	getProfile(@Request() req) {
 		const userId = req.user._id;
 		return this.authService.getProfile(userId);
-	}
-
-	@UseGuards(AuthGuard, RolesGuard)
-	@Get('admin')
-	getSomethingAdminOnly() {
-		return 'This is an admin only route';
 	}
 }
