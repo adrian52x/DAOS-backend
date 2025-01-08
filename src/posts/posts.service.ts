@@ -44,22 +44,23 @@ export class PostsService {
 		if (!Types.ObjectId.isValid(id)) {
 			throw new BadRequestException(ErrorMessages.INVALID_POST_ID);
 		}
-		const post = await this.postModel.findById(id)
+		const post = await this.postModel
+			.findById(id)
 			.populate({
 				path: 'ensemble',
 				populate: [
 					{
 						path: 'members',
 						model: 'User',
-						select: '_id name'
-					}
-				]
+						select: '_id name',
+					},
+				],
 			})
 			.populate('author')
 			.populate({
 				path: 'pendingRequests',
 				model: 'User',
-				select: '_id name'
+				select: '_id name',
 			})
 			.exec();
 		if (!post) {
@@ -130,13 +131,13 @@ export class PostsService {
 	async getFilteredPosts(limit: number, page: number, filters: any, sortOption: string): Promise<Post[]> {
 		// Build query based on filters
 		const filterQuery: any = {};
-		
+
 		// Filter by type (ensemble or individual)
 		if (filters.type) {
 			if (filters.type === 'Find ensembles') {
-			  filterQuery.ensemble = { $exists: true };
+				filterQuery.ensemble = { $exists: true };
 			} else if (filters.type === 'Find musicians') {
-			  filterQuery.ensemble = { $exists: false };
+				filterQuery.ensemble = { $exists: false };
 			}
 		}
 
@@ -145,10 +146,10 @@ export class PostsService {
 			const queryRegx = new RegExp(filters.title, 'i');
 			filterQuery.$or = [
 				{ title: { $regex: queryRegx } }, // case-insensitive search in title
-				{ description: { $regex: queryRegx } } // case-insensitive search in description
+				{ description: { $regex: queryRegx } }, // case-insensitive search in description
 			];
 		}
-	  
+
 		// Filter by instrument name
 		if (filters.instrument) {
 			filterQuery['instrument.name'] = filters.instrument; // Single instrument name
@@ -158,9 +159,9 @@ export class PostsService {
 		if (filters.genre) {
 			filterQuery['instrument.genre'] = filters.genre; // Single genre
 		}
-	  
+
 		console.log('Filter Query:', filterQuery);
-		
+
 		// Pagination logic
 		const skip = (page - 1) * limit;
 		// Sorting option (default to sorting by createdAt if not specified)
@@ -181,5 +182,9 @@ export class PostsService {
 			.find() // No filters by default
 			.sort({ createdAt: -1 }) // Sort by creation date (descending)
 			.limit(limit); // Limit the number of posts returned
+	}
+
+	async deleteMany() {
+		return this.postModel.deleteMany({}).exec();
 	}
 }

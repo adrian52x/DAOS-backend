@@ -18,7 +18,7 @@ export class EnsemblesService {
 		private readonly usersService: UsersService,
 
 		@Inject(forwardRef(() => PostsService))
-		private readonly postsService: PostsService,
+		private readonly postsService: PostsService
 	) {}
 
 	async create(createEnsembleDto: CreateEnsembleDto): Promise<Ensemble> {
@@ -52,14 +52,15 @@ export class EnsemblesService {
 		if (!Types.ObjectId.isValid(id)) {
 			throw new BadRequestException(ErrorMessages.INVALID_ENSEMBLE_ID);
 		}
-		return this.ensembleModel.findById(id)
-		.populate('owner')
-		.populate({
-			path: 'members',
-			model: 'User',
-			select: '_id name'
-		})
-		.exec();
+		return this.ensembleModel
+			.findById(id)
+			.populate('owner')
+			.populate({
+				path: 'members',
+				model: 'User',
+				select: '_id name',
+			})
+			.exec();
 	}
 
 	async findOneById(id: string): Promise<Ensemble> {
@@ -105,7 +106,7 @@ export class EnsemblesService {
 		if (!post) {
 			throw new BadRequestException(ErrorMessages.POST_NOT_FOUND);
 		}
-		
+
 		if (!ensemble) {
 			throw new BadRequestException(ErrorMessages.ENSEMBLE_NOT_FOUND);
 		}
@@ -127,11 +128,10 @@ export class EnsemblesService {
 
 		const [updatedPost, updatedEnsemble] = await Promise.all([
 			this.postModel.findByIdAndUpdate(postId, post, { new: true }).exec(),
-			this.ensembleModel.findByIdAndUpdate(ensembleId, ensemble, { new: true }).exec()
+			this.ensembleModel.findByIdAndUpdate(ensembleId, ensemble, { new: true }).exec(),
 		]);
 
-		return [ updatedPost, updatedEnsemble ];
-
+		return [updatedPost, updatedEnsemble];
 	}
 
 	async findAllUserOwn(userId: string): Promise<Ensemble[]> {
@@ -140,5 +140,9 @@ export class EnsemblesService {
 
 	async findEnsemblesByUser(userId: string): Promise<Ensemble[]> {
 		return this.ensembleModel.find({ members: userId }).exec();
+	}
+
+	async deleteMany() {
+		return this.ensembleModel.deleteMany({}).exec();
 	}
 }

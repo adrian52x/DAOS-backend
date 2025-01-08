@@ -45,21 +45,21 @@ export class PostsController {
 		@Query('limit') limit: string, // limit number of posts (pagination)
 		@Query('page') page: string, // page number (pagination)
 		@Query('sort') sort: string, // sorting (e.g., 'date', 'experience')
-		@Body() body: {
+		@Body()
+		body: {
 			type?: string;
 			title?: string;
 			instrument?: string;
 			genre?: string;
-		  }
+		}
 	) {
 		const { type, title, instrument, genre } = body;
 
-		const postLimit = parseInt(limit, 10) || 0; // default - all posts 
+		const postLimit = parseInt(limit, 10) || 0; // default - all posts
 		const postPage = parseInt(page, 10) || 1; // default to page 1
 		const sortOption = sort || 'createdAt'; // default sort by creation date
 
-		const filters: any = { type, title, instrument, genre};
-
+		const filters: any = { type, title, instrument, genre };
 
 		return this.postsService.getFilteredPosts(postLimit, postPage, filters, sortOption);
 	}
