@@ -36,7 +36,7 @@ export class AuthService {
 		res.cookie('access_token', accessToken);
 
 	    // Return the user without the password
-		const userWithoutPassword = { ...JSON.parse(JSON.stringify(validatedUser)), password: undefined, access_token: accessToken };
+		const userWithoutPassword = { ...JSON.parse(JSON.stringify(validatedUser)), password: undefined};
     	return userWithoutPassword;
 	}
 
