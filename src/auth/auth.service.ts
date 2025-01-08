@@ -32,13 +32,12 @@ export class AuthService {
 		const payload = { _id: validatedUser._id, email: validatedUser.email, name: validatedUser.name };
 		const accessToken = this.jwtService.sign(payload);
 
-		// Set the access_token in cookies
+		// access_token in cookies
 		res.cookie('access_token', accessToken);
 
 	    // Return the user without the password
-		const userWithoutPassword = { ...JSON.parse(JSON.stringify(validatedUser)), password: undefined};
+		const userWithoutPassword = { ...JSON.parse(JSON.stringify(validatedUser)), password: undefined, access_token: accessToken };
     	return userWithoutPassword;
-		//test
 	}
 
 	async register(user: CreateUserDto, res: any): Promise<any> {
