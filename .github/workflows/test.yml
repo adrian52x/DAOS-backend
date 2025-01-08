@@ -26,5 +26,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Set up environment variables
+        run: echo "TEST_MONGO_URI=${{ secrets.TEST_MONGO_URI }}" >> $GITHUB_ENV
+
       - name: Run tests
         run: npm run test:e2e
+        env:
+          TEST_MONGO_URI: ${{ secrets.TEST_MONGO_URI }}
